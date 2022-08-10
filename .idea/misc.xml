@@ -10,6 +10,7 @@
         <option value="$PROJECT_DIR$/hdfs-namenode/pom.xml" />
         <option value="$PROJECT_DIR$/hdfs-client/pom.xml" />
         <option value="$PROJECT_DIR$/hdfs-common/pom.xml" />
+        <option value="$PROJECT_DIR$/hdfs-backupnode/pom.xml" />
       </list>
     </option>
   </component>

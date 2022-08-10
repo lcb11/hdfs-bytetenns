@@ -7,12 +7,14 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="hdfs-client" />
+        <module name="hdfs-backupnode" />
         <module name="hdfs-datanode" />
         <module name="hdfs-common" />
         <module name="hdfs-namenode" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="hdfs-backupnode" target="1.8" />
       <module name="hdfs-client" target="1.8" />
       <module name="hdfs-common" target="1.8" />
       <module name="hdfs-datanode" target="1.8" />
@@ -21,6 +23,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="hdfs-backupnode" options="-parameters" />
       <module name="hdfs-client" options="-parameters" />
       <module name="hdfs-common" options="-parameters" />
       <module name="hdfs-datanode" options="-parameters" />
