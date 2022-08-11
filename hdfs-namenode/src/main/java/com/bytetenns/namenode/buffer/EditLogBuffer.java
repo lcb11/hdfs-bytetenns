@@ -22,4 +22,9 @@ public class EditLogBuffer {
     public EditLogBuffer() {
         this.buffer=new ByteArrayOutputStream(25*1024);
     }
+
+    //获取当前缓冲区的字节数量
+    public int getSize(){
+        return buffer.size();
+    }
 }
