@@ -16,5 +16,27 @@ public class Node {
     //孩子节点集合
     private List<Node> children;
 
+    public Node() {
+    }
 
+    public Node(String path, List<Node> children) {
+        this.path = path;
+        this.children = children;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public List<Node> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Node> children) {
+        this.children = children;
+    }
 }

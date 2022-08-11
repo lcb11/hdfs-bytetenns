@@ -5,12 +5,12 @@ import com.alibaba.fastjson.JSONObject;
 
 /**
   * @Author lcb
-  * @Description  edit log 日志
+  * @Description  edit log 日志,代表一条EditLog
   * @Date 2022/8/10
   * @Param
   * @return
   **/
-public class FSEditLog {
+public class EditLogWrapper {
     //每条edit log的id
     private long txid;
     //每条edit log的类容

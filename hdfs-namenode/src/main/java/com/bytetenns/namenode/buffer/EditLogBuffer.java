@@ -10,7 +10,7 @@ import java.io.ByteArrayOutputStream;
   * @return
   **/
 
-public class Buffer {
+public class EditLogBuffer {
 
     private ByteArrayOutputStream buffer;
 
@@ -19,7 +19,7 @@ public class Buffer {
     private long endTxid=0L;
 
     //初始化buffer容量为25K
-    public Buffer() {
+    public EditLogBuffer() {
         this.buffer=new ByteArrayOutputStream(25*1024);
     }
 }
