@@ -1,4 +1,6 @@
-package com.bytetenns.namenode.buffer;
+package com.bytetenns.namenode.editlog.buffer;
+
+import com.bytetenns.namenode.NameNodeConfig;
 
 import java.io.ByteArrayOutputStream;
 
@@ -20,11 +22,21 @@ public class EditLogBuffer {
 
     //初始化buffer容量为25K
     public EditLogBuffer() {
-        this.buffer=new ByteArrayOutputStream(25*1024);
+        this.buffer=new ByteArrayOutputStream(NameNodeConfig.EDIT_LOG_BUFFER_LIMIT);
     }
 
     //获取当前缓冲区的字节数量
     public int getSize(){
         return buffer.size();
     }
+
+    //todo 获取当前缓存区的edit log
+
+
+    //todo 清除缓冲区
+
+    //todo 讲edit log刷新到磁盘
+
+    //todo 写入一条数据到缓存区
+
 }

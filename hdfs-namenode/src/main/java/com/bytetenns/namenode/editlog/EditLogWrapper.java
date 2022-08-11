@@ -13,7 +13,7 @@ import com.alibaba.fastjson.JSONObject;
 public class EditLogWrapper {
     //每条edit log的id
     private long txid;
-    //每条edit log的类容
+    //每条edit log的内容
     private String content;
 
     public long getTxid() {

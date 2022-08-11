@@ -1,4 +1,4 @@
-package com.bytetenns.namenode;
+package com.bytetenns.namenode.fsimage;
 
 import java.util.List;
 
