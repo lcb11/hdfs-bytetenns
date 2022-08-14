@@ -1,4 +1,4 @@
-package com.bytetenns.namenode.fsimage;
+package com.bytetenns.namenode.fs;
 
 /**
   * @Author lcb

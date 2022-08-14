@@ -1,6 +1,9 @@
 package com.bytetenns.namenode;
 
 import com.bytetenns.namenode.datanode.DataNodeManager;
+import com.bytetenns.namenode.fs.DiskNameSystem;
+import com.bytetenns.namenode.server.NameNodeServer;
+import com.bytetenns.namenode.shard.ShardingManager;
 
 /**
   * @Author lcb
@@ -11,10 +14,19 @@ import com.bytetenns.namenode.datanode.DataNodeManager;
   **/
 public class NameNode {
 
+    //datanode管理组件
     private DataNodeManager dataNodeManager;
+    //负责管理元数据组件
+    private DiskNameSystem dikNameSystem;
+    //元数据分片组件
+    private ShardingManager shardingManager;
+    //对外提供服务
+    private NameNodeServer nameNodeServer;
 
     public NameNode() {
         this.dataNodeManager=new DataNodeManager();
+        this.dikNameSystem=new DiskNameSystem();
+        this.nameNodeServer=new NameNodeServer();
 
         initialize();
     }
