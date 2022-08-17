@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package com.bytetenns.dfs.common.proto;
+
+option java_multiple_files = true;
+option java_package = "com.bytetenns.dfs.model.datanode";
+
+
+message RegisterRequest {
+    string hostname = 1;
+    int32 nioPort = 2;
+    int32 httpPort = 3;
+    int64 storedDataSize = 4;
+    int64 freeSpace = 5;
+    int32 nodeId = 6;
+}
+
+message HeartbeatRequest {
+    string hostname = 1;
+}
+
+message HeartbeatResponse {
+    repeated ReplicaCommand commands = 1;
+}
+
+message ReplicaCommand {
+    string filename = 1;
+    string hostname = 2;
+    int32 port = 3;
+    int32 command = 4;
+}
+
+message InformReplicaReceivedRequest {
+    string hostname = 1;
+    string filename = 2;
+    int64 fileSize = 3;
+}
+
+message ReportCompleteStorageInfoRequest {
+    string hostname = 1;
+    repeated FileMetaInfo fileInfos = 2;
+    bool finished = 3;
+}
+
+message FileMetaInfo {
+    string filename = 1;
+    int64 fileSize = 2;
+}
+
+message PeerNodeAwareRequest {
+    string peerDataNode = 1;
+    int32 dataNodeId = 2;
+}
+
+
+

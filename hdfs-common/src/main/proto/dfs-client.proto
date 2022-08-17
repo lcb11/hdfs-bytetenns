@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package com.bytetenns.dfs.common.proto;
+
+option java_multiple_files = true;
+option java_package = "com.bytetenns.dfs.model.client";
+
+import "commons.proto";
+
+message MkdirRequest {
+    string path = 1;
+    map<string, string> attr = 2;
+}
+
+
+message GetDataNodeForFileRequest {
+    string filename = 1;
+}
+
+message GetDataNodeForFileResponse {
+    DataNode dataNode = 1;
+    string realFileName = 2;
+}
+
+message CreateFileRequest {
+    string filename = 1;
+    int64 fileSize = 2;
+    map<string, string> attr = 3;
+}
+
+message CreateFileResponse {
+    repeated DataNode dataNodes = 1;
+    string realFileName = 2;
+}
+
+message AuthenticateInfoRequest {
+    string authenticateInfo = 1;
+}
+
+message AuthenticateInfoResponse {
+    string token = 1;
+}
+
+message RemoveFileRequest {
+    string filename = 1;
+}
+
+message ReadAttrRequest {
+    string filename = 1;
+}
+
+message ReadAttrResponse {
+    map<string, string> attr = 1;
+}
+
+message ReadStorageInfoRequest {
+    string filename = 1;
+}
+
+message ReadStorageInfoResponse {
+    int32 replica = 1;
+    string datanodes = 2;
+}
+
+message PreCalculateRequest {
+    string path = 1;
+}
+
+message PreCalculateResponse {
+    int32 fileCount = 1;
+    int64 totalSize = 2;
+}
+
+message GetAllFilenameRequest {
+    string path = 1;
+}
+
+message GetAllFilenameResponse {
+    repeated string filename = 1;
+}
