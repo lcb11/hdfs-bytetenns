@@ -11,6 +11,7 @@
         <!-- <module>hdfs-namenode</module> -->
         <!-- <module>hdfs-common</module> -->
         <module>hdfs-datanode</module>
+        <module>hdfs-backupnode</module>
         <!-- <module>hdfs-client</module> -->
     </modules>
 
