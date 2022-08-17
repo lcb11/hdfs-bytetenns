@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.Properties;
 
 /**
  * @Author: jiaoyuliang
@@ -33,4 +34,27 @@ public class BackupNodeConfig {
 
     // backupNode地址
     private String backupNodeServer;
+
+    /**
+     * 将properties格式的hashtable 转化 为NameNodeConfig中的属性
+     * @param properties
+     * @return
+     */
+    public static BackupNodeConfig parse(Properties properties) {
+        String baseDir = (String) properties.get("base.dir");
+        long fetchEditLogInterval = Integer.parseInt((String) properties.get("fetch.editslog.interval"));
+        int fetchEditLogSize = Integer.parseInt((String) properties.get("fetch.editslog.size"));
+        long checkpointInterval = Long.parseLong((String) properties.get("checkpoint.interval"));
+        String nameNodeServer = (String) properties.get("namenode.server");
+        String backupNodeServer = (String) properties.get("backupnode.server");
+        return BackupNodeConfig.builder()
+                .baseDir(baseDir)
+                .fetchEditLogInterval(fetchEditLogInterval)
+                .fetchEditLogSize(fetchEditLogSize)
+                .checkpointInterval(checkpointInterval)
+                .nameNodeServer(nameNodeServer)
+                .backupNodeServer(backupNodeServer)
+                .build();
+    }
+
 }
