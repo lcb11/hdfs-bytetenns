@@ -1,7 +1,7 @@
 package com.bytetenns.datanode.network;
 
 import com.google.protobuf.MessageLite;
-import com.ruyuan.dfs.common.Constants;
+import com.bytetenns.datanode.constants.Constants;
 import com.bytetenns.datanode.netty.NettyPacket;
 import com.bytetenns.datanode.enums.PacketType;
 import io.netty.channel.ChannelHandlerContext;
