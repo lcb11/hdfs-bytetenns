@@ -1,12 +1,16 @@
 package com.bytetenns.backupnode;
 
+import com.bytetenns.backupnode.client.NameNodeClient;
 import com.bytetenns.backupnode.config.BackupNodeConfig;
+import com.bytetenns.backupnode.filesystem.InMemoryNameSystem;
+import com.bytetenns.backupnode.server.BackupNodeServer;
 import lombok.extern.slf4j.Slf4j;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @Author jiaoyuliang
@@ -15,6 +19,16 @@ import java.util.Properties;
  */
 @Slf4j
 public class BackupNode {
+
+    // 引入 文件管理
+    private final InMemoryNameSystem nameSystem;
+
+    // 作为NameNode的客户端
+    private final NameNodeClient nameNodeClient;
+
+    // 作为服务端
+    private final BackupNodeServer backupNodeServer;
+
     public static void main(String[] args) {
     // 1 读取配置文件 并进行解析
         // 1.1 判断args是否不为空
@@ -57,7 +71,9 @@ public class BackupNode {
      * @param backupNodeConfig
      */
     public BackupNode(BackupNodeConfig backupNodeConfig) {
-
+        this.nameSystem = new InMemoryNameSystem(backupNodeConfig);
+        this.nameNodeClient = new NameNodeClient(backupNodeConfig, nameSystem);
+        this.backupNodeServer = new BackupNodeServer(backupNodeConfig);
     }
 
     /**
