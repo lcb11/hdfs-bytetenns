@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package com.bytetenns.dfs.common.proto;
+
+option java_multiple_files = true;
+option java_package = "com.bytetenns.dfs.model.backup";
+
+import "namenode.proto";
+
+message FetchEditsLogResponse {
+  repeated EditLog editLogs = 1;
+}
+
+message FetchEditsLogRequest {
+  int64 txId = 1;
+  bool needSlots = 2;
+}
+
+message EditLog {
+  int64 txId = 1;
+  int32 opType = 2;
+  string path = 3;
+  map<string, string> attr = 4;
+}
+
+message INode {
+  string path = 1;
+  int32 type = 2;
+  repeated INode children = 3;
+  map<string, string> attr = 4;
+}
+
+message BackupNodeInfo {
+  string hostname = 1;
+  int32 port = 2;
+}
+
+message NameNodeConf {
+  map<string, string> values = 1;
+}
+
+message BackupNodeSlots {
+  map<int32, int32> slots = 1;
+}

@@ -1,0 +1,145 @@
+syntax = "proto3";
+
+package com.ruyuan.dfs.common.proto;
+
+option java_multiple_files = true;
+option java_package = "com.ruyuan.dfs.model.namenode";
+
+import "commons.proto";
+import "datanode.proto";
+
+
+message ControllerVote {
+    int32 voterNodeId = 1;
+    int32 controllerNodeId = 2;
+    int32 voteRound = 3;
+    bool force = 4;
+}
+
+message NameNodeAwareRequest {
+    int32 nameNodeId = 1;
+    int32 numOfNode = 2;
+    string server = 3;
+    repeated string servers = 4;
+    bool isClient = 5;
+}
+
+message NameNodeSlots {
+    map<int32, int32> oldSlots = 1;
+    map<int32, int32> newSlots = 2;
+    bool rebalance = 3;
+    int32 rebalanceNodeId = 4;
+}
+
+
+
+message RebalanceSlotsRequest {
+    int32 nameNodeId = 1;
+}
+
+message FetchMetaDataRequest {
+    repeated int32 slots = 1;
+    int32 nodeId = 2;
+}
+
+message FetchMetaDataResponse {
+    repeated Metadata files = 1;
+    bool completed = 2;
+    int32 nodeId = 3;
+}
+
+message Metadata {
+    string fileName = 1;
+    int32 type = 2;
+    string hostname = 3;
+    int64 fileSize = 4;
+    map<string, string> attr = 5;
+}
+
+message RebalanceFetchMetadataCompletedEvent {
+    int32 rebalanceNodeId = 1;
+}
+
+message RebalanceRemoveMetadataCompletedEvent {
+    int32 rebalanceNodeId = 1;
+    int32 currentNameNodeId = 2;
+}
+
+message TrashResumeRequest {
+    repeated string files = 1;
+}
+
+message TrashResumeResponse {
+    int32 fileCount = 1;
+}
+
+message UserChangeEvent {
+    int32 eventType = 1;
+    UserEntity userEntity = 2;
+}
+
+message UserEntity {
+    string username = 1;
+    string secret = 2;
+    UserStorageEntity storage = 3;
+    int64 createTime = 4;
+}
+
+message UserStorageEntity {
+    int64 storageSize = 1;
+    int32 fileCount = 2;
+    repeated string dataNodes = 3;
+}
+
+message UserList {
+    repeated UserEntity userEntities = 1;
+}
+
+message ListFileRequest {
+    string path = 1;
+}
+
+message NameNodeInfo {
+    int32 nodeId = 1;
+    string hostname = 2;
+    int32 httpPort = 3;
+    int32 nioPort = 4;
+    string backupNodeInfo = 5;
+}
+
+message RemoveFileOrDirRequest {
+    repeated string files = 1;
+}
+
+message RemoveFileOrDirResponse {
+    int32 fileCount = 1;
+}
+
+message FetchDataNodeByFilenameRequest {
+    string filename = 1;
+}
+
+
+message AddReplicaNumRequest {
+    string filename = 1;
+    int32 replicaNum = 2;
+}
+
+message ClientNameNodeInfo {
+    map<string, string> config = 1;
+    map<int32, int32> slots = 2;
+    string backup = 3;
+}
+
+message ClientDataNodeInfo {
+    repeated ClientDataNode clientDataNodes = 1;
+}
+
+message ClientDataNode {
+    int32 nodeId = 1;
+    string hostname = 2;
+    int64 storedDataSize = 3;
+    int64 freeSpace = 4;
+    int32 status = 5;
+}
+

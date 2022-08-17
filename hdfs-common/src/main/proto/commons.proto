@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package com.bytetenns.dfs.common.proto;
+
+option java_multiple_files = true;
+option java_package = "com.bytetenns.dfs.model.common";
+
+message DataNode {
+    string hostname = 1;
+    int32 nioPort = 2;
+    int32 httpPort = 3;
+}
+
+message GetFileRequest {
+    string filename = 1;
+}
+
+message NettyPacketHeader {
+    map<string, string> headers = 1;
+}
+
+
+
