@@ -1,8 +1,8 @@
 package com.bytetenns.datanode.network;
 
-import com.ruyuan.dfs.common.Constants;
-import com.ruyuan.dfs.common.NettyPacketDecoder;
-import com.ruyuan.dfs.common.NettyPacketEncoder;
+import com.bytetenns.datanode.constants.Constants;
+import com.bytetenns.datanode.netty.NettyPacketDecoder;
+import com.bytetenns.datanode.netty.NettyPacketEncoder;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.LengthFieldPrepender;

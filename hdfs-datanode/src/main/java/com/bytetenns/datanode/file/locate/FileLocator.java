@@ -1,4 +1,4 @@
-package com.ruyuan.dfs.datanode.server.locate;
+package com.bytetenns.datanode.file.locate;
 
 /**
  * 文件寻址

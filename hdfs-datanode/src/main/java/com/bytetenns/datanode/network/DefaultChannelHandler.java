@@ -1,10 +1,10 @@
 package com.bytetenns.datanode.network;
 
-import com.ruyuan.dfs.common.Constants;
+import com.bytetenns.datanode.constants.Constants;
 import com.bytetenns.datanode.netty.NettyPacket;
 import com.ruyuan.dfs.common.exception.RequestTimeoutException;
 import com.bytetenns.datanode.utils.DefaultScheduler;
-import com.ruyuan.dfs.common.utils.NetUtils;
+import com.bytetenns.datanode.utils.NetUtils;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
 import lombok.extern.slf4j.Slf4j;

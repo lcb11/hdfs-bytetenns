@@ -1,8 +1,8 @@
 package com.bytetenns.datanode.network;
 
-import com.ruyuan.dfs.common.NettyPacket;
+import com.bytetenns.datanode.netty.NettyPacket;
 import com.ruyuan.dfs.common.exception.RequestTimeoutException;
-import com.ruyuan.dfs.common.utils.DefaultScheduler;
+import com.bytetenns.datanode.utils.DefaultScheduler;
 import com.ruyuan.dfs.common.utils.NamedThreadFactory;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
