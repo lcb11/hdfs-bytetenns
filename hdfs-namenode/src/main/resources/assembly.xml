@@ -1,0 +1,36 @@
+<assembly>
+    <id>assembly</id>
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+    <includeBaseDirectory>true</includeBaseDirectory>
+    <fileSets>
+        <fileSet>
+            <directory>bin</directory>
+            <includes>
+                <include>*.sh</include>
+            </includes>
+            <outputDirectory>bin</outputDirectory>
+            <fileMode>0755</fileMode>
+        </fileSet>
+        <fileSet>
+            <directory>../conf</directory>
+            <outputDirectory>conf</outputDirectory>
+            <includes>
+                <include>logback-backupnode.xml</include>
+                <include>logback-namenode.xml</include>
+                <include>backupnode.properties</include>
+                <include>namenode.properties</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+    <dependencySets>
+        <dependencySet>
+            <useProjectArtifact>true</useProjectArtifact> <!-- 指定打包时是否包含工程自身生成的jar包 -->
+            <unpack>false</unpack> <!-- 所有jar包是否解压出来-->
+            <outputDirectory>lib</outputDirectory>
+            <scope>runtime</scope>
+        </dependencySet>
+    </dependencySets>
+
+</assembly>

@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.bytetenns</groupId>
-    <artifactId>hdfs</artifactId>
+    <artifactId>hdfs-bytetenns</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 
     <modules>
-        <!-- <module>hdfs-namenode</module> -->
         <module>hdfs-common</module>
-        <module>hdfs-datanode</module>
+        <module>hdfs-client</module>
         <module>hdfs-backupnode</module>
-        <!-- <module>hdfs-client</module> -->
+        <module>hdfs-namenode</module>
+        <module>hdfs-datanode</module>
     </modules>
 
     <properties>
@@ -23,9 +25,10 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
 
-        <bytetenns.dfs.common.version>1.0.2-SNAPSHOT</bytetenns.dfs.common.version>
-        <bytetenns.dfs.datanode.version>1.0</bytetenns.dfs.datanode.version>
-        <bytetenns.dfs.namenode.version>1.0</bytetenns.dfs.namenode.version>
+        <bytetenns.hdfs.common.version>1.0.2-SNAPSHOT</bytetenns.hdfs.common.version>
+        <bytetenns.hdfs.datanode.version>1.0</bytetenns.hdfs.datanode.version>
+        <bytetenns.hdfs.namenode.version>1.0</bytetenns.hdfs.namenode.version>
+        <bytetenns.hdfs.backupnode.version>1.0</bytetenns.hdfs.backupnode.version>
 
         <grpc.version>1.3.0</grpc.version>
         <protobuf.version>3.3.0</protobuf.version>
@@ -40,8 +43,8 @@
         <dependencies>
             <dependency>
                 <groupId>com.bytetenns</groupId>
-                <artifactId>bytetenns-dfs-common</artifactId>
-                <version>${bytetenns.dfs.common.version}</version>
+                <artifactId>hdfs-common</artifactId>
+                <version>1.0.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
