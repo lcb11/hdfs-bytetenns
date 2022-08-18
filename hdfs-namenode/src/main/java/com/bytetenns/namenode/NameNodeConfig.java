@@ -21,4 +21,6 @@ public class NameNodeConfig {
     //rpc通信端口
     public static int RCP_PORT=80010;
 
+    public NameNodeConfig() {
+    }
 }
