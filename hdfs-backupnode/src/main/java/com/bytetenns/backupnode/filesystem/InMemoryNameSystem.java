@@ -64,4 +64,25 @@ public class InMemoryNameSystem extends FsNameSystem{
         this.maxTxId = maxTxId;
     }
 
+    /**
+     * 获取FSImage
+     * @return FsImage
+     */
+    public FsImage getFsImage() {
+        FsImage fsImage = directory.getFsImage();
+        fsImage.setMaxTxId(maxTxId);
+        return fsImage;
+    }
+
+    public long getMaxTxId() {
+        return maxTxId;
+    }
+
+    /**
+     * 恢复过程是否完成
+     */
+    public boolean isRecovering() {
+        return recovering.get();
+    }
+
 }

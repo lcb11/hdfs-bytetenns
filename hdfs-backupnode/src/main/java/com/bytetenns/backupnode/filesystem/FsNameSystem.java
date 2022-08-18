@@ -1,6 +1,7 @@
 package com.bytetenns.backupnode.filesystem;
 
 import com.bytetenns.backupnode.fs.FsDirectory;
+import com.bytetenns.backupnode.fs.Node;
 import com.bytetenns.backupnode.fsimage.FsImage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;
@@ -98,6 +99,19 @@ public abstract class FsNameSystem {
         //关闭锁
         stopWatch.stop();
         log.info("Apply FsImage File cost {} ms", stopWatch.getTime());
+    }
+
+    public void mkdir(String path, Map<String, String> attr) {
+        this.directory.mkdir(path, attr);
+    }
+
+    public boolean createFile(String filename, Map<String, String> attr) {
+        return this.directory.createFile(filename, attr);
+    }
+
+    public boolean deleteFile(String filename) {
+        Node node = this.directory.delete(filename);
+        return node != null;
     }
 
 }
