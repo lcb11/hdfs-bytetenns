@@ -1,7 +1,10 @@
 package com.bytetenns.backupnode.server;
 
 import com.bytetenns.backupnode.config.BackupNodeConfig;
+import com.bytetenns.network.NetServer;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Collections;
 
 /**
  * @Author jiaoyuliang
@@ -14,8 +17,19 @@ public class BackupNodeServer {
     // BN配置文件
     private BackupNodeConfig backupNodeConfig;
 
+    private NetServer netServer;
+
     public BackupNodeServer(BackupNodeConfig backupNodeConfig) {
         this.backupNodeConfig = backupNodeConfig;
+    }
+
+    /**
+     * 启动并绑定端口
+     * @throws InterruptedException 中断异常
+     */
+    public void start() throws InterruptedException {
+        netServer.addHandlers(Collections.singletonList(new AwareConnectHandler()));
+        netServer.bind(backupNodeConfig.getBackupNodePort());
     }
 
 }
