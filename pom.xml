@@ -26,6 +26,7 @@
         <bytetenns.dfs.common.version>1.0.2-SNAPSHOT</bytetenns.dfs.common.version>
         <bytetenns.dfs.datanode.version>1.0</bytetenns.dfs.datanode.version>
         <bytetenns.dfs.namenode.version>1.0</bytetenns.dfs.namenode.version>
+        <bytetenns.dfs.backupnode.version>1.0</bytetenns.dfs.backupnode.version>
 
         <grpc.version>1.3.0</grpc.version>
         <protobuf.version>3.3.0</protobuf.version>
@@ -40,7 +41,7 @@
         <dependencies>
             <dependency>
                 <groupId>com.bytetenns</groupId>
-                <artifactId>bytetenns-dfs-common</artifactId>
+                <artifactId>hdfs-common</artifactId>
                 <version>${bytetenns.dfs.common.version}</version>
             </dependency>
             <dependency>

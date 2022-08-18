@@ -2,22 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.2</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
-    <groupId>com.bytetenns.common</groupId>
-    <artifactId>common</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>common</name>
-    <description>分布式存储common</description>
 
-    <properties>
-        <java.version>1.8</java.version>
-        <protobuf.version>3.3.0</protobuf.version>
-    </properties>
+    <parent>
+        <groupId>com.bytetenns</groupId>
+        <artifactId>hdfs</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>hdfs-common</artifactId>
+    <version>${bytetenns.dfs.common.version}</version>
+    <packaging>jar</packaging>
+    <description>分布式存储common</description>
 
     <dependencies>
 
