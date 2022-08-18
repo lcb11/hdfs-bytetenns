@@ -29,28 +29,12 @@ public class BackupNode {
     // 作为服务端
     private final BackupNodeServer backupNodeServer;
 
+    // 解决多线程的原子性问题 具有排他性，当某个线程进入方法，执行其中的指令时，不会被其他线程打断
+    private final AtomicBoolean started = new AtomicBoolean(false);
+
     public static void main(String[] args) {
-    // 1 读取配置文件 并进行解析
-        // 1.1 判断args是否不为空
-        if (args == null || args.length == 0) {
-            throw new IllegalArgumentException("BackupNode配置文件不能为空");
-        }
-        // 1.2 读取配置文件
-        BackupNodeConfig backupNodeConfig = null;
-        try {
-            Path path = Paths.get(args[0]); //获取配置文件路径
-            try (InputStream inputStream = Files.newInputStream(path)) { //Input流读文件
-                // 1.3 Properties类封装
-                Properties properties = new Properties();
-                properties.load(inputStream);
-                // 1.4 解析到BacnkupNodeConfig文件中
-                backupNodeConfig = BackupNodeConfig.parse(properties);
-            }
-            log.info("BackupNode启动配置文件：{}", path.toAbsolutePath());  //配置文件启动成功打印log日志
-        } catch (Exception e) {
-            log.error("配置类加载失败：{}", e);
-            System.exit(1);  //配置文件读取失败退出系统
-        }
+        // 1 获取配置信息
+        BackupNodeConfig backupNodeConfig = new BackupNodeConfig();
 
         // 2 启动或关闭程序
         try {
@@ -80,8 +64,10 @@ public class BackupNode {
      * 启动BackupNode
      * @throws Exception
      */
-    private void start() {
-
+    private void start() throws Exception {
+        if (started.compareAndSet(false, true)) {
+            this.nameSystem.recoveryNamespace();
+        }
     }
 
     /**

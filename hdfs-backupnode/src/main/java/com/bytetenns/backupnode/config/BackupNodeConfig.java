@@ -18,43 +18,21 @@ import java.util.Properties;
 public class BackupNodeConfig {
 
     // 本地文件存放路径
-    private String baseDir;
+    private String baseDir = "/bytedance/dfs/backupnode";
 
     // 每次拉取editslog的间隔
-    private long fetchEditLogInterval;
+    private long fetchEditLogInterval = 5000;
 
     // 每次拉取editslog的数量
-    private int fetchEditLogSize;
+    private int fetchEditLogSize = 10;
 
     // checkpoint操作的时间间隔, 默认60分钟
-    private long checkpointInterval;
+    private long checkpointInterval = 3600000;
 
     // namenode地址
-    private String nameNodeServer;
+    private String nameNodeServer = "localhost:2341";
 
     // backupNode地址
-    private String backupNodeServer;
-
-    /**
-     * 将properties格式的hashtable 转化 为NameNodeConfig中的属性
-     * @param properties
-     * @return
-     */
-    public static BackupNodeConfig parse(Properties properties) {
-        String baseDir = (String) properties.get("base.dir");
-        long fetchEditLogInterval = Integer.parseInt((String) properties.get("fetch.editslog.interval"));
-        int fetchEditLogSize = Integer.parseInt((String) properties.get("fetch.editslog.size"));
-        long checkpointInterval = Long.parseLong((String) properties.get("checkpoint.interval"));
-        String nameNodeServer = (String) properties.get("namenode.server");
-        String backupNodeServer = (String) properties.get("backupnode.server");
-        return BackupNodeConfig.builder()
-                .baseDir(baseDir)
-                .fetchEditLogInterval(fetchEditLogInterval)
-                .fetchEditLogSize(fetchEditLogSize)
-                .checkpointInterval(checkpointInterval)
-                .nameNodeServer(nameNodeServer)
-                .backupNodeServer(backupNodeServer)
-                .build();
-    }
+    private String backupNodeServer = "localhost:12341";
 
 }
