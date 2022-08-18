@@ -18,6 +18,11 @@
             <artifactId>hdfs-common</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.bytetenns</groupId>
+            <artifactId>hdfs-namenode</artifactId>
+            <version>${bytetenns.hdfs.namenode.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
         </dependency>
