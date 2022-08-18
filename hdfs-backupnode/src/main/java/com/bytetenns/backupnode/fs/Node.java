@@ -1,7 +1,7 @@
 package com.bytetenns.backupnode.fs;
 
-import com.bytetenns.backupnode.enums.NodeType;
 import com.bytetenns.dfs.model.backup.INode;
+import com.bytetenns.enums.NodeType;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
