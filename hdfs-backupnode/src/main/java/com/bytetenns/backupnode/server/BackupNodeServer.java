@@ -32,4 +32,8 @@ public class BackupNodeServer {
         netServer.bind(backupNodeConfig.getBackupNodePort());
     }
 
+    public void shutdown() {
+        this.netServer.shutdown();
+    }
+
 }
