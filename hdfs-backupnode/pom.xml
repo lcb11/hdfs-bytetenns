@@ -17,12 +17,12 @@
         <java.version>1.8</java.version>
     </properties>
     <dependencies>
-        <!--<dependency>
+        <dependency>
             <groupId>com.bytetenns.common</groupId>
             <artifactId>common</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>com.bytetenns.client</groupId>
             <artifactId>client</artifactId>
             <version>0.0.1-SNAPSHOT</version>
