@@ -34,7 +34,9 @@ public class FsDirectory {
      */
     public void mkdir(String path, Map<String, String> attr) {
         try {
+            //获取写锁
             lock.writeLock().lock();
+            //将路径划转换为String[]数组
             String[] paths = StringUtils.split(path, '/');
             Node current = root;
             for (String p : paths) {
@@ -43,8 +45,10 @@ public class FsDirectory {
                 }
                 current = findDirectory(current, p);
             }
+            //给当前节点设置属性信息
             current.putAllAttr(attr);
         } finally {
+            //解锁
             lock.writeLock().unlock();
         }
     }
@@ -57,8 +61,11 @@ public class FsDirectory {
      */
     public boolean createFile(String filename, Map<String, String> attr) {
         try {
+            //获取写锁
             lock.writeLock().lock();
+            //将文件名划分
             String[] paths = StringUtils.split(filename, '/');
+            //paths数组的最后一个元素代表文件名
             String fileNode = paths[paths.length - 1];
             Node fileParentNode = getFileParent(paths);
             Node childrenNode = fileParentNode.getChildren(fileNode);
@@ -71,12 +78,14 @@ public class FsDirectory {
             fileParentNode.addChildren(child);
             return true;
         } finally {
+            //释放写锁
             lock.writeLock().unlock();
         }
     }
 
     private Node getFileParent(String[] paths) {
         Node current = root;
+        //因为没有遍历了数组的的最后一个元素，最后一个元素的值代表文件名
         for (int i = 0; i < paths.length - 1; i++) {
             String p = paths[i];
             if ("".equals(p)) {
@@ -93,15 +102,19 @@ public class FsDirectory {
      * @param filename 文件名
      */
     public Node delete(String filename) {
+        //获取写锁
         lock.writeLock().lock();
         try {
             String[] paths = StringUtils.split(filename, '/');
             String name = paths[paths.length - 1];
             Node current = getFileParent(paths);
             Node childrenNode;
+            //如果文件名为null
             if ("".equals(name)) {
+                //将当前节点的位置前移到上一级
                 childrenNode = current;
             } else {
+                //如果文件名不为空，就定位到该文件
                 childrenNode = current.getChildren(name);
             }
             if (childrenNode == null) {
@@ -114,14 +127,18 @@ public class FsDirectory {
                     return null;
                 }
             }
+            //删除父节点中保存的要删除节点的信息
             Node remove = current.getChildren().remove(name);
 
             // 删除空文件夹
             Node parent = remove.getParent();
             Node child = remove;
+            //逐级删除文件，从下往上删除
             while (parent != null) {
                 if (child.getChildren().isEmpty()) {
+                    //将要删除节点中保存的父节点的信息置为null
                     child.setParent(null);
+                    //将父节点的保存的孩子节点的信息删除
                     parent.getChildren().remove(child.getPath());
                 }
                 child = parent;
@@ -129,6 +146,7 @@ public class FsDirectory {
             }
             return Node.deepCopy(remove, Integer.MAX_VALUE);
         } finally {
+            //释放锁
             lock.writeLock().unlock();
         }
     }
@@ -136,9 +154,11 @@ public class FsDirectory {
     private Node findDirectory(Node current, String p) {
         Node childrenNode = current.getChildren(p);
         if (childrenNode == null) {
+            //如果当前节点的孩子节点不存在孩子节点，将给节点的类型设置为文件夹
             childrenNode = new Node(p, NodeType.DIRECTORY.getValue());
             current.addChildren(childrenNode);
         }
+        //如果有childrenNode，返回该childrenNode
         current = childrenNode;
         return current;
     }
@@ -165,9 +185,12 @@ public class FsDirectory {
      */
     public void applyFsImage(FsImage fsImage) {
         try {
+            //获取写锁
             lock.writeLock().lock();
+            //构造文件目录树，调用parseINode解析INode文件，转换为Node
             this.root = Node.parseINode(fsImage.getINode(), "");
         } finally {
+            //不管有没有调用成功，都要解锁
             lock.writeLock().unlock();
         }
     }

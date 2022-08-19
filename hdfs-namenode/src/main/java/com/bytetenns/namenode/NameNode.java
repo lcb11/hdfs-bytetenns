@@ -60,7 +60,7 @@ public class NameNode {
         //this.shardingManager = new ShardingManager(nameNodeConfig, peerNameNodes, controllerManager);
         //this.nameNodeApis = new NameNodeApis(diskNameSystem.getNameNodeConfig(), dataNodeManager, peerNameNodes,
         //        shardingManager, diskNameSystem, defaultScheduler, userManager, controllerManager);
-        this.nameNodeServer = new NameNodeServer(defaultScheduler, diskNameSystem, nameNodeApis);
+        //this.nameNodeServer = new NameNodeServer(defaultScheduler, diskNameSystem, nameNodeApis);
     }
 
     /**
@@ -75,9 +75,9 @@ public class NameNode {
             //diskNameSystem：负责管理文件系统元数据的组件 落地磁盘的实现
             //recoveryNamespace()：基于本地文件恢复元数据空间
             this.diskNameSystem.recoveryNamespace();
-            this.shardingManager.start();
+            //this.shardingManager.start();
             //this.tomcatServer.start();
-            this.nameNodeServer.start();
+            //this.nameNodeServer.start();
         }
     }
 

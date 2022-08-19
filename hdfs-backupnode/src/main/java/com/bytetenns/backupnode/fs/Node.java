@@ -17,6 +17,7 @@ public class Node {
     private String path;
     private int type;
     private final TreeMap<String, Node> children;
+    //节点属性
     private Map<String, String> attr;
     private Node parent;
 

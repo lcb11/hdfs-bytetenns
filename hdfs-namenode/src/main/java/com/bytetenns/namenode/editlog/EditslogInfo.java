@@ -20,6 +20,7 @@ import java.util.Objects;
 @NoArgsConstructor
 public class EditslogInfo implements Comparable<EditslogInfo> {
 
+    //todo stat end 代表什么
     private long start;
     private long end;
     private String name;

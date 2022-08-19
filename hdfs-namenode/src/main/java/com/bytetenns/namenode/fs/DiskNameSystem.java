@@ -49,17 +49,21 @@ public class DiskNameSystem  extends AbstractFsNameSystem{
             FsImage fsImage = scanLatestValidFsImage(nameNodeConfig.getBaseDir());
             long txId = 0L;
             if (fsImage != null) {
+                //存在fsImage文件，获取
                 txId = fsImage.getMaxTxId();
                 applyFsImage(fsImage);
             }
-            // 回放editLog文件
-            this.editLog.playbackEditLog(txId, obj -> {//方法的实现
+            // 回放editLog文件，将editlog文件加载到内存，txId比当前fsImage更大的
+            this.editLog.playbackEditLog(txId, obj -> {
+                //开始回访符合条件的txid
                 EditLog editLog = obj.getEditLog();
+                //获取editLog的操作类型
                 int opType = editLog.getOpType();
                 if (opType == FsOpType.MKDIR.getValue()) {//MKDIR：创建文件夹
                     // 这里要调用super.mkdir 回放的editLog不需要再刷磁盘
                     super.mkdir(editLog.getPath(), editLog.getAttrMap());
                 } else if (opType == FsOpType.CREATE.getValue()) {//CREATE：创建文件
+                    //创建文件，但传入的文件名是editLog.getPath()：文件路径，最后一个元素代表文件名字
                     super.createFile(editLog.getPath(), editLog.getAttrMap());
                 } else if (opType == FsOpType.DELETE.getValue()) {
                     super.deleteFile(editLog.getPath());//DELETE：删除文件

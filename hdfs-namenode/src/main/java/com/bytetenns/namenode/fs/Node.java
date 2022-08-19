@@ -18,7 +18,7 @@ import java.util.*;
 @Slf4j
 public class Node {
 
-    private String path;//节点路径
+    private String path;//节点路径，最后一个元素代表文件名
     private int type;//节点类型
     private final TreeMap<String, Node> children;//该节点下的所有孩子节点
     private Map<String, String> attr;//
@@ -89,21 +89,26 @@ public class Node {
         return parseINode(iNode, null);
     }
 
+    //将fsImage文件里面的node信息反序列化为Node
     public static Node parseINode(INode iNode, String parent) {
         Node node = new Node();
         if (parent != null && log.isDebugEnabled()) {
             log.debug("parseINode executing :[path={},  type={}]", parent, node.getType());
         }
+        //给Node节点设置值
         String path = iNode.getPath();
         int type = iNode.getType();
         node.setPath(path);
         node.setType(type);
+        //给Node节点设置属性值->将iNode节点的属性信息传输给Node
         node.putAllAttr(iNode.getAttrMap());
+        //设置Node节点的孩子节点
         List<INode> children = iNode.getChildrenList();
         if (children.isEmpty()) {
             return node;
         }
         for (INode child : children) {
+            //递归调用parseINode，解析iNode节点
             node.addChildren(parseINode(child, parent == null ? null : parent + "/" + child.getPath()));
         }
         return node;
@@ -131,6 +136,7 @@ public class Node {
             TreeMap<String, Node> children = node.children;
             if (!children.isEmpty()) {
                 for (String key : children.keySet()) {
+                    //递归调用deepCopy，设置孩子节点的信息
                     ret.addChildren(deepCopy(children.get(key), level - 1));
                 }
             }
@@ -151,7 +157,7 @@ public class Node {
     }
 
     /**
-     * 获取孩子接地那
+     * 获取孩子节点
      *
      * @param child 孩子节点
      */

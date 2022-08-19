@@ -98,10 +98,16 @@ public class FileUtil {
      * @param path 文件路径
      */
     public static ByteBuffer readBuffer(String path) throws IOException {
-        try (RandomAccessFile raf = new RandomAccessFile(path, "r"); FileInputStream fis =
-                new FileInputStream(raf.getFD()); FileChannel channel = fis.getChannel()) {
+        try (RandomAccessFile raf = new RandomAccessFile(path, "r");
+             //获取一个文件输入流
+             FileInputStream fis = new FileInputStream(raf.getFD());
+             //给这个文件输入流绑定一个通道
+             FileChannel channel = fis.getChannel()) {
+            //给ByteBuffer分配大小，大小为File文件的长度
             ByteBuffer buffer = ByteBuffer.allocate((int) raf.length());
+            //将该文件读入ByteBuffer
             channel.read(buffer);
+            //通道从写模式转换为读模式
             buffer.flip();
             return buffer;
         }

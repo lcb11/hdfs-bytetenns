@@ -1,6 +1,9 @@
 package com.bytetenns.namenode.editlog;
 
+import com.bytetenns.common.utils.FileUtil;
 import com.bytetenns.namenode.NameNodeConfig;
+import com.bytetenns.namenode.editlog.buffer.DoubleBuffer;
+import com.bytetenns.namenode.fs.PlaybackEditLogCallback;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;
 
@@ -215,25 +218,34 @@ public class FsEditLog {
      * @throws IOException IO异常
      */
     public void playbackEditLog(long txiId, PlaybackEditLogCallback callback) throws IOException {
+        //保存当前传进来的Txid
         long currentTxSeq = txiId;
+        //以当前加载editlog文件的txid值为初始自增txid
         this.txIdSeq = currentTxSeq;
+        //获取比txiId更大的EditslogInfo
         List<EditslogInfo> sortedEditLogsFiles = getSortedEditLogFiles(txiId);
         StopWatch stopWatch = new StopWatch();
+        //遍历获取到的所有比txid更大的EditslogInfo
         for (EditslogInfo info : sortedEditLogsFiles) {
+            //如果当前EditslogInfo的txid小于currentTxSeq，跳过该条EditslogInfo
             if (info.getEnd() <= currentTxSeq) {
                 continue;
             }
+            //如果当前EditslogInfo的txid大于currentTxSeq,则该条EditslogInfo所包含的所有EditLogWrapper
             List<EditLogWrapper> editLogWrappers = readEditLogFromFile(info.getName());
             stopWatch.start();
             for (EditLogWrapper editLogWrapper : editLogWrappers) {
+                //获取当前editLogWrapper的txid
                 long tmpTxId = editLogWrapper.getTxId();
                 if (tmpTxId <= currentTxSeq) {
                     continue;
                 }
-                //todo 这里为啥要交换txid
+                //交换txid，保证currentTxSeq不会重复加载同一条editLogWrapper
                 currentTxSeq = tmpTxId;
+                //保证txIdSeq实时更新，不会覆盖掉别的edit log
                 this.txIdSeq = currentTxSeq;
                 if (callback != null) {
+                    //回放符合条件的txid
                     callback.playback(editLogWrapper);
                 }
             }
@@ -251,6 +263,7 @@ public class FsEditLog {
      * @throws IOException IO异常
      */
     public List<EditLogWrapper> readEditLogFromFile(String absolutePath) throws IOException {
+        //返回一个Bytebuffer，buffer为读模式
         return EditLogWrapper.parseFrom(FileUtil.readBuffer(absolutePath));
     }
 

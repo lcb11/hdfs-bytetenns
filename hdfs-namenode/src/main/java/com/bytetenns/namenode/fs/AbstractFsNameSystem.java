@@ -79,12 +79,14 @@ public abstract class AbstractFsNameSystem implements FsNameSystem {
      * @return 最新并合法的FSImage
      */
     protected FsImage scanLatestValidFsImage(String baseDir) throws IOException {
-        //扫描本地文件，把所有FsImage文件扫描出来
+        //扫描本地文件，把所有FsImage文件扫描出来，k-V->fsimage文件名中的数字：文件的绝对地址
         Map<Long, String> timeFsImageMap = scanFsImageMap(baseDir);
+        //将Map中的key转换为List数组
         List<Long> sortedList = new ArrayList<>(timeFsImageMap.keySet());
-        //根据文件的key对文件进行排序
+        //根据list的key对文件进行排序
         sortedList.sort((o1, o2) -> o1.equals(o2) ? 0 : (int) (o2 - o1));
         for (Long time : sortedList) {
+            //获取当前遍历fsimage文件路径
             String path = timeFsImageMap.get(time);
             try (RandomAccessFile raf = new RandomAccessFile(path, "r");
                  //getFD()：返回与此流关联的不透明文件描述符对象
@@ -107,7 +109,7 @@ public abstract class AbstractFsNameSystem implements FsNameSystem {
      * @return FSImage Map
      */
     public Map<Long, String> scanFsImageMap(String path) {
-        //todo 为什么timeFsImageMap初始化为8？？？
+
         Map<Long, String> timeFsImageMap = new HashMap<>(8);
         File dir = new File(path);
         if (!dir.exists()) {
@@ -128,6 +130,7 @@ public abstract class AbstractFsNameSystem implements FsNameSystem {
             if (!file.getName().contains("fsimage")) {
                 continue;
             }
+            //获取fsImage文件后面的数字
             String str = file.getName().split("-")[1];
             long time = Long.parseLong(str);
             //getAbsolutePath()：Returns the absolute pathname string of this abstract pathname

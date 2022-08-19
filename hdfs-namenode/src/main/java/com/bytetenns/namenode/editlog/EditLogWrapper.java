@@ -21,7 +21,7 @@ import java.util.Map;
   * @return
   **/
 @Slf4j
-public class EditLogWrapper {
+public class EditLogWrapper {//一条editlog占4个字节
 
     private EditLog editLog;
 
@@ -71,11 +71,16 @@ public class EditLogWrapper {
 
     public static List<EditLogWrapper> parseFrom(ByteBuffer byteBuffer) {
         List<EditLogWrapper> ret = new LinkedList<>();
+        //判断当前byteBuffer是否还有元素
         while (byteBuffer.hasRemaining()) {
             try {
+                //获取当前位置后面的4个字节
                 int bodyLength = byteBuffer.getInt();
+                //初始化一个字节数组
                 byte[] body = new byte[bodyLength];
+                //将byteBuffer里面的值给boby
                 byteBuffer.get(body);
+                //将boby信息反序列化，得到editLog
                 EditLog editLog = EditLog.parseFrom(body);
                 ret.add(new EditLogWrapper(editLog));
             } catch (Exception e) {
