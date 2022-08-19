@@ -1,7 +1,7 @@
 package com.bytetenns.backupnode.server;
 
 import com.bytetenns.backupnode.config.BackupNodeConfig;
-import com.bytetenns.network.NetServer;
+import com.bytetenns.common.network.NetServer;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;

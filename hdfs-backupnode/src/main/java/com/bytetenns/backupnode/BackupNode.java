@@ -4,7 +4,7 @@ import com.bytetenns.backupnode.client.NameNodeClient;
 import com.bytetenns.backupnode.config.BackupNodeConfig;
 import com.bytetenns.backupnode.filesystem.InMemoryNameSystem;
 import com.bytetenns.backupnode.server.BackupNodeServer;
-import com.bytetenns.scheduler.DefaultScheduler;
+import com.bytetenns.common.scheduler.DefaultScheduler;
 import lombok.extern.slf4j.Slf4j;
 import java.util.concurrent.atomic.AtomicBoolean;
 

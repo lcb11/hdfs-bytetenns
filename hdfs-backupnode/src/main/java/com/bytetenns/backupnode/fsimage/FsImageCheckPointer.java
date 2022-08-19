@@ -3,8 +3,8 @@ package com.bytetenns.backupnode.fsimage;
 import com.bytetenns.backupnode.client.NameNodeClient;
 import com.bytetenns.backupnode.config.BackupNodeConfig;
 import com.bytetenns.backupnode.filesystem.InMemoryNameSystem;
-import com.bytetenns.network.file.FileTransportClient;
-import com.bytetenns.utils.FileUtil;
+import com.bytetenns.common.network.file.FileTransportClient;
+import com.bytetenns.common.utils.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.ByteBuffer;

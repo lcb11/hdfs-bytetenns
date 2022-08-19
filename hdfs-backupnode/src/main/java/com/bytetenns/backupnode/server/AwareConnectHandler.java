@@ -1,10 +1,10 @@
 package com.bytetenns.backupnode.server;
 
 import com.bytetenns.backupnode.ha.NodeRoleSwitcher;
-import com.bytetenns.netty.NettyPacket;
-import com.bytetenns.network.AbstractChannelHandler;
-import com.bytetenns.utils.ByteUtil;
-import com.bytetenns.utils.NetUtils;
+import com.bytetenns.common.netty.NettyPacket;
+import com.bytetenns.common.network.AbstractChannelHandler;
+import com.bytetenns.common.utils.ByteUtil;
+import com.bytetenns.common.utils.NetUtils;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 
