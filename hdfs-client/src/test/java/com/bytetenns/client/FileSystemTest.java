@@ -37,7 +37,7 @@ public class FileSystemTest {
         Map<String, String> attr = new HashMap<>(PrettyCodes.trimMapSize());
         attr.put("aaa", "1222");
         String filename = "/usr/local/TestPicture-" + random.nextInt(100000000) + ".jpg";
-        fileSystem.put(filename, new File(UPLOAD_LOCAL_PATH), -1, attr);
+        fileSystem.put(filename, new File(UPLOAD_LOCAL_PATH), attr, null);
         return filename;
     }
 

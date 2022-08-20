@@ -5,7 +5,7 @@ import com.bytetenns.client.config.FsClientConfig;
 /**
  * 文件系统客户端
  *
- * @author Sun Dasheng
+ * @author Li Zhirun
  */
 public class FsClient {
 

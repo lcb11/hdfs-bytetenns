@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * 作为文件系统的接口
  *
- * @author Sun Dasheng
+ * @author Li Zhirun, Yangjie
  */
 public interface FileSystem {
 
@@ -45,16 +45,6 @@ public interface FileSystem {
      */
     void put(String filename, File file) throws Exception;
 
-    /**
-     * 上传文件
-     *
-     * @param filename     服务器文件路径
-     * @param file         本地文件
-     * @param numOfReplica 文件副本数量
-     * @throws Exception 文件不存在
-     */
-    void put(String filename, File file, int numOfReplica) throws Exception;
-
 
     /**
      * 上传文件
@@ -62,22 +52,10 @@ public interface FileSystem {
      * @param filename     服务器文件路径
      * @param file         本地文件
      * @param attr         文件属性
-     * @param numOfReplica 文件副本数量
+     * @param listener     文件上传监听器
      * @throws Exception 文件不存在
      */
-    void put(String filename, File file, int numOfReplica, Map<String, String> attr) throws Exception;
-
-    /**
-     * 上传文件
-     *
-     * @param filename     服务器文件路径
-     * @param file         本地文件
-     * @param attr         文件属性
-     * @param numOfReplica 文件副本数量
-     * @param listener     进度监听
-     * @throws Exception 文件不存在
-     */
-    void put(String filename, File file, int numOfReplica, Map<String, String> attr, OnProgressListener listener) throws Exception;
+    void put(String filename, File file, Map<String, String> attr, OnProgressListener listener) throws Exception;
 
 
     /**
