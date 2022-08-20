@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * 文件信息
  *
- * @author Sun Dasheng
+ * @author Li Zhirun
  */
 @Data
 @NoArgsConstructor
