@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * 文件信息
  *
- * @author Sun Dasheng
+ * @author Li Zhirun
  */
 @Data
 @NoArgsConstructor
@@ -24,6 +24,10 @@ public class FsFile {
     private String path;
     private String fileSize;
 
+    /**
+     * 把INode节点解析为FsFile文件的类型，FsFile包括文件类型，
+     * 文件路径和文件大小
+     */
     public static List<FsFile> parse(INode node) {
         if (node == null) {
             return new ArrayList<>();

@@ -186,17 +186,7 @@ public class FileSystemImpl implements FileSystem {
 
     @Override
     public void put(String filename, File file) throws Exception {
-        put(filename, file, -1, new HashMap<>(PrettyCodes.trimMapSize()));
-    }
-
-    @Override
-    public void put(String filename, File file, int replicaNum) throws Exception {
-        put(filename, file, replicaNum, new HashMap<>(PrettyCodes.trimMapSize()));
-    }
-
-    @Override
-    public void put(String filename, File file, int numOfReplica, Map<String, String> attr) throws Exception {
-        put(filename, file, numOfReplica, attr, null);
+        put(filename, file, new HashMap<>(PrettyCodes.trimMapSize()), null);
     }
 
     /**
@@ -206,18 +196,12 @@ public class FileSystemImpl implements FileSystem {
      * </pre>
      */
     @Override
-    public void put(String filename, File file, int replicaNum, Map<String, String> attr, OnProgressListener listener) throws Exception {
+    public void put(String filename, File file,  Map<String, String> attr, OnProgressListener listener) throws Exception {
         validate(filename);
-        if (replicaNum > Constants.MAX_REPLICA_NUM) {
-            throw new DfsClientException("不合法的副本数量：" + replicaNum);
-        }
         for (String key : Constants.KEYS_ATTR_SET) {
             if (attr.containsKey(key)) {
                 log.warn("文件属性包含关键属性：[key={}]", key);
             }
-        }
-        if (replicaNum > 0) {
-            attr.put(Constants.ATTR_REPLICA_NUM, String.valueOf(replicaNum));
         }
         CreateFileRequest request = CreateFileRequest.newBuilder()
                 .setFilename(filename)
