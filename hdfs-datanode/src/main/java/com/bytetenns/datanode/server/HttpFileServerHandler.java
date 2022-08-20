@@ -33,6 +33,9 @@ public class HttpFileServerHandler extends SimpleChannelInboundHandler<FullHttpR
         this.metricsHandler = new MetricsHandler();
     }
 
+    /*
+     * Called when a message is received from the server
+     */
     @Override
     public void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
         String filename = URLDecoder.decode(request.uri(), "UTF-8");
@@ -51,6 +54,7 @@ public class HttpFileServerHandler extends SimpleChannelInboundHandler<FullHttpR
             }
             try {
                 RandomAccessFile raf = new RandomAccessFile(file, "r");
+                // 创建Http response
                 HttpResponse response = new DefaultHttpResponse(HTTP_1_1, HttpResponseStatus.OK);
                 response.headers().set(HttpHeaderNames.CONTENT_LENGTH, raf.length());
                 response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/octet-stream");
@@ -58,13 +62,17 @@ public class HttpFileServerHandler extends SimpleChannelInboundHandler<FullHttpR
                         new String(name.getBytes("GBK"), "ISO8859-1") + "\"");
                 ctx.write(response);
                 ChannelFuture sendFileFuture;
+                // 判断pipeline中是否有SslHandler
                 if (ctx.pipeline().get(SslHandler.class) == null) {
+                    // 传输文件时使用FileRegion来进行传输，写到channel中
                     sendFileFuture = ctx.write(new DefaultFileRegion(raf.getChannel(), 0,
                             raf.length()), ctx.newProgressivePromise());
                 } else {
+                    // 使用ChunkedFile（使用了SSL的安全传输方式）分块传输文件
                     sendFileFuture = ctx.write(new ChunkedFile(raf, 0,
                             raf.length(), 8192), ctx.newProgressivePromise());
                 }
+                // 增加listener，从而实现异步获取传输文件后client端的返回结果
                 sendFileFuture.addListener(new ChannelProgressiveFutureListener() {
 
                     private long lastProgress = 0;
