@@ -1,9 +1,10 @@
-package com.ruyuan.dfs.client;
+package com.bytetenns.client;
 
-import com.ruyuan.dfs.client.config.FsClientConfig;
-import com.ruyuan.dfs.common.utils.PrettyCodes;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+
+import com.bytetenns.client.config.FsClientConfig;
+import com.bytetenns.utils.PrettyCodes;
 
 import java.io.File;
 import java.util.HashMap;

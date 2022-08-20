@@ -1,12 +1,6 @@
-package com.ruyuan.dfs.client.tools.command;
+package com.bytetenns.client.tools.command;
 
-import com.ruyuan.dfs.client.FileSystem;
-import com.ruyuan.dfs.client.utils.ConsoleTable;
-import com.ruyuan.dfs.client.utils.ProgressBar;
-import com.ruyuan.dfs.common.network.file.OnProgressListener;
-import com.ruyuan.dfs.common.utils.FileUtil;
-import com.ruyuan.dfs.common.utils.PrettyCodes;
-import com.ruyuan.dfs.common.utils.StringUtils;
+
 
 import java.io.File;
 import java.util.ArrayList;
@@ -14,6 +8,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+
+import com.bytetenns.client.FileSystem;
+import com.bytetenns.client.utils.ConsoleTable;
+import com.bytetenns.client.utils.ProgressBar;
+import com.bytetenns.network.file.OnProgressListener;
+import com.bytetenns.utils.FileUtil;
+import com.bytetenns.utils.PrettyCodes;
+import com.bytetenns.utils.StringUtils;
 
 /**
  * 抽象命令

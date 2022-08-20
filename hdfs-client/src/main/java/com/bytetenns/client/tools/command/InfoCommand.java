@@ -1,7 +1,7 @@
-package com.ruyuan.dfs.client.tools.command;
+package com.bytetenns.client.tools.command;
 
-import com.ruyuan.dfs.client.FileSystem;
-import com.ruyuan.dfs.model.client.ReadStorageInfoResponse;
+import com.bytetenns.client.FileSystem;
+import com.bytetenns.dfs.model.client.ReadStorageInfoResponse;
 import org.jline.reader.LineReader;
 
 /**

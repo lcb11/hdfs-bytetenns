@@ -1,11 +1,11 @@
-package com.ruyuan.dfs.client.tools.command;
+package com.bytetenns.client.tools.command;
 
-import com.ruyuan.dfs.client.FileSystem;
-import com.ruyuan.dfs.client.utils.ConsoleTable;
-import com.ruyuan.dfs.common.utils.FileUtil;
-import com.ruyuan.dfs.model.namenode.ClientDataNode;
-import com.ruyuan.dfs.model.namenode.ClientDataNodeInfo;
-import com.ruyuan.dfs.model.namenode.ClientNameNodeInfo;
+import com.bytetenns.client.FileSystem;
+import com.bytetenns.client.utils.ConsoleTable;
+import com.bytetenns.utils.FileUtil;
+import com.bytetenns.dfs.model.namenode.ClientDataNode;
+import com.bytetenns.dfs.model.namenode.ClientDataNodeInfo;
+import com.bytetenns.dfs.model.namenode.ClientNameNodeInfo;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;

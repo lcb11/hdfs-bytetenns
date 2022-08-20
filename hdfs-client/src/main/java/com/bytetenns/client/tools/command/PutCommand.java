@@ -1,10 +1,10 @@
-package com.ruyuan.dfs.client.tools.command;
+package com.bytetenns.client.tools.command;
 
-import com.ruyuan.dfs.client.FileSystem;
-import com.ruyuan.dfs.client.utils.ProgressBar;
-import com.ruyuan.dfs.common.network.file.OnProgressListener;
-import com.ruyuan.dfs.common.utils.PrettyCodes;
-import com.ruyuan.dfs.common.utils.StringUtils;
+import com.bytetenns.client.FileSystem;
+import com.bytetenns.client.utils.ProgressBar;
+import com.bytetenns.network.file.OnProgressListener;
+import com.bytetenns.utils.PrettyCodes;
+import com.bytetenns.utils.StringUtils;
 import org.jline.reader.LineReader;
 
 import java.io.File;

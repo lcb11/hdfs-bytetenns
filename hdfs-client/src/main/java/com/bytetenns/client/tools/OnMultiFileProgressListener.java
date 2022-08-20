@@ -1,6 +1,6 @@
-package com.ruyuan.dfs.client.tools;
+package com.bytetenns.client.tools;
 
-import com.ruyuan.dfs.common.network.file.OnProgressListener;
+import com.bytetenns.network.file.OnProgressListener;
 
 /**
  * 多文件传输进度监听器

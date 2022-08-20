@@ -1,4 +1,4 @@
-package com.ruyuan.dfs.client.config;
+package com.bytetenns.client.config;
 
 import lombok.Builder;
 import lombok.Data;

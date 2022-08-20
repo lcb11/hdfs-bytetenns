@@ -1,6 +1,7 @@
-package com.ruyuan.dfs.client.tools;
+package com.bytetenns.client.tools;
 
-import com.ruyuan.dfs.client.utils.CommandLineUtils;
+import com.bytetenns.client.utils.CommandLineUtils;
+
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;

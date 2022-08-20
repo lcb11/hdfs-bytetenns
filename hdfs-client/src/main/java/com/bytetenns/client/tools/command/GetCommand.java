@@ -1,7 +1,7 @@
-package com.ruyuan.dfs.client.tools.command;
+package com.bytetenns.client.tools.command;
 
-import com.ruyuan.dfs.client.FileSystem;
-import com.ruyuan.dfs.common.utils.StringUtils;
+import com.bytetenns.client.FileSystem;
+import com.bytetenns.utils.StringUtils;
 import org.jline.reader.LineReader;
 
 import java.io.File;

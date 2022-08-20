@@ -1,4 +1,4 @@
-package com.ruyuan.dfs.client.exception;
+package com.bytetenns.client.exception;
 
 /**
  * 连接超时异常

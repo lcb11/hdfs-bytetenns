@@ -1,9 +1,9 @@
-package com.ruyuan.dfs.client.tools.command;
+package com.bytetenns.client.tools.command;
 
-import com.ruyuan.dfs.client.FileSystem;
-import com.ruyuan.dfs.client.FsFile;
-import com.ruyuan.dfs.client.utils.ConsoleTable;
-import com.ruyuan.dfs.common.enums.NodeType;
+import com.bytetenns.client.FileSystem;
+import com.bytetenns.client.FsFile;
+import com.bytetenns.client.utils.ConsoleTable;
+import com.bytetenns.enums.NodeType;
 import org.jline.reader.LineReader;
 
 import java.util.ArrayList;

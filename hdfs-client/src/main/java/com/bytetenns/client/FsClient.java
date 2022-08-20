@@ -1,6 +1,6 @@
-package com.ruyuan.dfs.client;
+package com.bytetenns.client;
 
-import com.ruyuan.dfs.client.config.FsClientConfig;
+import com.bytetenns.client.config.FsClientConfig;
 
 /**
  * 文件系统客户端

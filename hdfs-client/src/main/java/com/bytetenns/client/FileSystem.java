@@ -1,11 +1,12 @@
-package com.ruyuan.dfs.client;
+package com.bytetenns.client;
 
-import com.ruyuan.dfs.common.network.file.OnProgressListener;
-import com.ruyuan.dfs.model.client.GetAllFilenameResponse;
-import com.ruyuan.dfs.model.client.PreCalculateResponse;
-import com.ruyuan.dfs.model.client.ReadStorageInfoResponse;
-import com.ruyuan.dfs.model.namenode.ClientDataNodeInfo;
-import com.ruyuan.dfs.model.namenode.ClientNameNodeInfo;
+
+import com.bytetenns.dfs.model.client.GetAllFilenameResponse;
+import com.bytetenns.dfs.model.client.PreCalculateResponse;
+import com.bytetenns.dfs.model.client.ReadStorageInfoResponse;
+import com.bytetenns.network.file.OnProgressListener;
+import com.bytetenns.dfs.model.namenode.ClientDataNodeInfo;
+import com.bytetenns.dfs.model.namenode.ClientNameNodeInfo;
 
 import java.io.File;
 import java.util.List;

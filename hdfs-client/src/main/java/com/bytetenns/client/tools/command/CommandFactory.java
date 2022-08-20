@@ -1,6 +1,6 @@
-package com.ruyuan.dfs.client.tools.command;
+package com.bytetenns.client.tools.command;
 
-import com.ruyuan.dfs.client.tools.CommandReader;
+import com.bytetenns.client.tools.CommandReader;
 
 /**
  * 命令工厂

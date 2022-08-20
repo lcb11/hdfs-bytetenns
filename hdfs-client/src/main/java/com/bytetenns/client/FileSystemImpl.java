@@ -1,29 +1,29 @@
-package com.ruyuan.dfs.client;
+package com.bytetenns.client;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.ruyuan.dfs.client.config.FsClientConfig;
-import com.ruyuan.dfs.client.exception.DfsClientException;
-import com.ruyuan.dfs.client.tools.CommandLineListener;
-import com.ruyuan.dfs.client.tools.OnMultiFileProgressListener;
-import com.ruyuan.dfs.common.Constants;
-import com.ruyuan.dfs.common.NettyPacket;
-import com.ruyuan.dfs.common.enums.PacketType;
-import com.ruyuan.dfs.common.exception.RequestTimeoutException;
-import com.ruyuan.dfs.common.ha.BackupNodeManager;
-import com.ruyuan.dfs.common.network.NetClient;
-import com.ruyuan.dfs.common.network.RequestWrapper;
-import com.ruyuan.dfs.common.network.file.FileTransportClient;
-import com.ruyuan.dfs.common.network.file.OnProgressListener;
-import com.ruyuan.dfs.common.utils.DefaultScheduler;
-import com.ruyuan.dfs.common.utils.PrettyCodes;
-import com.ruyuan.dfs.common.utils.StringUtils;
-import com.ruyuan.dfs.model.backup.BackupNodeInfo;
-import com.ruyuan.dfs.model.backup.INode;
-import com.ruyuan.dfs.model.client.*;
-import com.ruyuan.dfs.model.common.DataNode;
-import com.ruyuan.dfs.model.namenode.ClientDataNodeInfo;
-import com.ruyuan.dfs.model.namenode.ClientNameNodeInfo;
-import com.ruyuan.dfs.model.namenode.ListFileRequest;
+import com.bytetenns.client.config.FsClientConfig;
+import com.bytetenns.client.exception.DfsClientException;
+import com.bytetenns.client.tools.CommandLineListener;
+import com.bytetenns.client.tools.OnMultiFileProgressListener;
+import com.bytetenns.Constants;
+import com.bytetenns.enums.PacketType;
+import com.bytetenns.exception.RequestTimeoutException;
+import com.bytetenns.ha.BackupNodeManager;
+import com.bytetenns.netty.NettyPacket;
+import com.bytetenns.network.NetClient;
+import com.bytetenns.network.RequestWrapper;
+import com.bytetenns.network.file.FileTransportClient;
+import com.bytetenns.network.file.OnProgressListener;
+import com.bytetenns.scheduler.DefaultScheduler;
+import com.bytetenns.utils.PrettyCodes;
+import com.bytetenns.utils.StringUtils;
+import com.bytetenns.dfs.model.backup.BackupNodeInfo;
+import com.bytetenns.dfs.model.backup.INode;
+import com.bytetenns.dfs.model.client.*;
+import com.bytetenns.dfs.model.common.DataNode;
+import com.bytetenns.dfs.model.namenode.ClientDataNodeInfo;
+import com.bytetenns.dfs.model.namenode.ClientNameNodeInfo;
+import com.bytetenns.dfs.model.namenode.ListFileRequest;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -103,6 +103,7 @@ public class FileSystemImpl implements FileSystem {
         }
     }
 
+    // 此处做了较大改动
     private void handleFetchBackupNodeInfoResponse(RequestWrapper requestWrapper) throws InvalidProtocolBufferException {
         if (requestWrapper.getRequest().getBody().length == 0) {
             log.warn("拉取BackupNode信息为空，设置NetClient为无限重试.");
