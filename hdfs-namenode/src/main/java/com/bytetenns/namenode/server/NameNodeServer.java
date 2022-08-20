@@ -9,4 +9,5 @@ package com.bytetenns.namenode.server;
    * @return
    **/
 public class NameNodeServer {
+    private NameNodeApis nameNodeApis;
 }
