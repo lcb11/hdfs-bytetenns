@@ -1,7 +1,7 @@
 package com.bytetenns.namenode.fs;
 
 import com.bytetenns.common.netty.Constants;
-import com.ruyuan.dfs.model.namenode.Metadata;
+import com.bytetenns.dfs.model.namenode.Metadata;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.StopWatch;
 

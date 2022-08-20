@@ -1,6 +1,6 @@
 package com.bytetenns.namenode.fs;
 
-import com.ruyuan.dfs.model.namenode.Metadata;
+import com.bytetenns.dfs.model.namenode.Metadata;
 
 import java.util.Map;
 import java.util.Set;

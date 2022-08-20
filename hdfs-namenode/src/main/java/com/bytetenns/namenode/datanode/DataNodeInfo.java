@@ -21,18 +21,30 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Data
 @Slf4j
 public class DataNodeInfo implements Comparable<DataNodeInfo>{
+    //初始化状态
     public static final int STATUS_INIT = 1;
+    //准备状态
     public static final int STATUS_READY = 2;
 
+    //datanode Id
     private Integer nodeId;
+    //datanode所在主机地址
     private String hostname;
+    //http请求端口号
     private int httpPort;
+    //nio通道端口号
     private int nioPort;
+    //最晚心跳时间
     private long latestHeartbeatTime;
+    //当前datanode存储的大小
     private volatile long storedDataSize;
+    //当前datanode还剩余多大
     private volatile long freeSpace;
+    //状态
     private int status;
+    //副本复制队列
     private ConcurrentLinkedQueue<ReplicaTask> replicaTasks = new ConcurrentLinkedQueue<>();
+    //副本删除队列
     private ConcurrentLinkedQueue<RemoveReplicaTask> removeReplicaTasks = new ConcurrentLinkedQueue<>();
 
     public DataNodeInfo(String hostname, int nioPort, int httpPort, long latestHeartbeatTime) {
