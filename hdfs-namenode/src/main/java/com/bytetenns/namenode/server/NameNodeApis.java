@@ -2,50 +2,18 @@ package com.bytetenns.namenode.server;
 
 import com.bytetenns.common.enums.NameNodeLaunchMode;
 import com.bytetenns.common.enums.PacketType;
+import com.bytetenns.common.exception.NameNodeException;
+import com.bytetenns.common.exception.RequestTimeoutException;
 import com.bytetenns.common.network.AbstractChannelHandler;
 import com.bytetenns.common.network.RequestWrapper;
+import com.bytetenns.common.network.file.FileReceiveHandler;
 import com.bytetenns.common.scheduler.DefaultScheduler;
 import com.bytetenns.namenode.NameNodeConfig;
 import com.bytetenns.namenode.datanode.DataNodeManager;
 import com.bytetenns.namenode.fs.DiskNameSystem;
 import com.bytetenns.namenode.shard.ShardingManager;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.ruyuan.dfs.common.Constants;
-import com.ruyuan.dfs.common.FileInfo;
-import com.ruyuan.dfs.common.NettyPacket;
-import com.ruyuan.dfs.common.enums.CommandType;
-import com.ruyuan.dfs.common.enums.NameNodeLaunchMode;
-import com.ruyuan.dfs.common.enums.NodeType;
-import com.ruyuan.dfs.common.enums.PacketType;
-import com.ruyuan.dfs.common.exception.NameNodeException;
-import com.ruyuan.dfs.common.exception.RequestTimeoutException;
-import com.ruyuan.dfs.common.metrics.Prometheus;
-import com.ruyuan.dfs.common.network.AbstractChannelHandler;
-import com.ruyuan.dfs.common.network.RequestWrapper;
-import com.ruyuan.dfs.common.network.file.FilePacket;
-import com.ruyuan.dfs.common.network.file.FileReceiveHandler;
-import com.ruyuan.dfs.common.utils.DefaultScheduler;
-import com.ruyuan.dfs.common.utils.NetUtils;
-import com.ruyuan.dfs.common.utils.PrettyCodes;
-import com.ruyuan.dfs.model.backup.*;
-import com.ruyuan.dfs.model.client.*;
-import com.ruyuan.dfs.model.common.DataNode;
-import com.ruyuan.dfs.model.datanode.*;
 import com.ruyuan.dfs.model.namenode.*;
-import com.ruyuan.dfs.namenode.config.NameNodeConfig;
-import com.ruyuan.dfs.namenode.datanode.DataNodeInfo;
-import com.ruyuan.dfs.namenode.datanode.DataNodeManager;
-import com.ruyuan.dfs.namenode.editslog.EditLogWrapper;
-import com.ruyuan.dfs.namenode.fs.CalculateResult;
-import com.ruyuan.dfs.namenode.fs.DiskNameSystem;
-import com.ruyuan.dfs.namenode.fs.Node;
-import com.ruyuan.dfs.namenode.rebalance.RemoveReplicaTask;
-import com.ruyuan.dfs.namenode.rebalance.ReplicaTask;
-import com.ruyuan.dfs.namenode.server.tomcat.domain.User;
-import com.ruyuan.dfs.namenode.shard.ShardingManager;
-import com.ruyuan.dfs.namenode.shard.controller.ControllerManager;
-import com.ruyuan.dfs.namenode.shard.peer.PeerNameNode;
-import com.ruyuan.dfs.namenode.shard.peer.PeerNameNodes;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
 import lombok.extern.slf4j.Slf4j;
@@ -83,19 +51,15 @@ public class NameNodeApis extends AbstractChannelHandler {
     private final FileReceiveHandler fileReceiveHandler;
     private BackupNodeInfoHolder backupNodeInfoHolder;
 
-    public NameNodeApis(NameNodeConfig nameNodeConfig, DataNodeManager dataNodeManager, PeerNameNodes peerNameNodes,
-                        ShardingManager shardingManager, DiskNameSystem diskNameSystem, DefaultScheduler defaultScheduler,
-                        UserManager userManager, ControllerManager controllerManager) {
+    public NameNodeApis(NameNodeConfig nameNodeConfig, DataNodeManager dataNodeManager,
+                        ShardingManager shardingManager, DiskNameSystem diskNameSystem,
+                        DefaultScheduler defaultScheduler) {
         this.dataNodeManager = dataNodeManager;
-        this.peerNameNodes = peerNameNodes;
         this.nameNodeConfig = nameNodeConfig;
         this.shardingManager = shardingManager;
         this.diskNameSystem = diskNameSystem;
         this.nodeId = nameNodeConfig.getNameNodeId();
         this.mode = nameNodeConfig.getMode();
-        this.userManager = userManager;
-        this.peerNameNodes.setNameNodeApis(this);
-        this.controllerManager = controllerManager;
         this.defaultScheduler = defaultScheduler;
         this.fetchEditLogBuffer = new FetchEditLogBuffer(diskNameSystem);
         this.shardingManager.addOnSlotAllocateCompletedListener(slots -> {

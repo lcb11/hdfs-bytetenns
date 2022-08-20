@@ -27,10 +27,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
   **/
 @Slf4j
 public class NameNode {
-    //private final NameNodeApis nameNodeApis;//网络请求接口处理器
+    private final NameNodeApis nameNodeApis;//网络请求接口处理器
     private final DefaultScheduler defaultScheduler;//调度器
     private final DataNodeManager dataNodeManager;//负责管理dataNode
-    //private final ShardingManager shardingManager;//负责元数据分片的组件
+    private final ShardingManager shardingManager;//负责元数据分片的组件
     private final AtomicBoolean started = new AtomicBoolean(false);//原子布尔类
     private final DiskNameSystem diskNameSystem;//负责管理文件系统元数据的组件 落地磁盘的实现
     private final NameNodeServer nameNodeServer;//NameNode对外提供服务接口
@@ -57,10 +57,10 @@ public class NameNode {
         this.defaultScheduler = new DefaultScheduler("NameNode-Scheduler-");
         this.dataNodeManager = new DataNodeManager(nameNodeConfig, defaultScheduler);
         this.diskNameSystem = new DiskNameSystem(nameNodeConfig, defaultScheduler, dataNodeManager);
-        //this.shardingManager = new ShardingManager(nameNodeConfig, peerNameNodes, controllerManager);
-        //this.nameNodeApis = new NameNodeApis(diskNameSystem.getNameNodeConfig(), dataNodeManager, peerNameNodes,
-        //        shardingManager, diskNameSystem, defaultScheduler, userManager, controllerManager);
-        //this.nameNodeServer = new NameNodeServer(defaultScheduler, diskNameSystem, nameNodeApis);
+        this.shardingManager = new ShardingManager(nameNodeConfig);
+        this.nameNodeApis = new NameNodeApis(diskNameSystem.getNameNodeConfig(), dataNodeManager,
+                shardingManager, diskNameSystem, defaultScheduler);
+        this.nameNodeServer = new NameNodeServer(defaultScheduler, diskNameSystem, nameNodeApis);
     }
 
     /**
@@ -75,9 +75,9 @@ public class NameNode {
             //diskNameSystem：负责管理文件系统元数据的组件 落地磁盘的实现
             //recoveryNamespace()：基于本地文件恢复元数据空间
             this.diskNameSystem.recoveryNamespace();
-            //this.shardingManager.start();
+            this.shardingManager.start();
             //this.tomcatServer.start();
-            //this.nameNodeServer.start();
+            this.nameNodeServer.start();
         }
     }
 
