@@ -1,19 +1,19 @@
 package com.bytetenns.datanode.server;
 
-import com.bytetenns.datanode.network.NetServer;
-import com.bytetenns.datanode.utils.DefaultScheduler;
+import com.bytetenns.network.NetServer;
+import com.bytetenns.scheduler.DefaultScheduler;
 import com.bytetenns.datanode.conf.DataNodeConfig;
 import com.bytetenns.datanode.replica.PeerDataNodes;
 import lombok.extern.slf4j.Slf4j;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.bytetenns.datanode.netty.NettyPacket;
-import com.bytetenns.datanode.enums.PacketType;
+import com.bytetenns.netty.NettyPacket;
+import com.bytetenns.enums.PacketType;
 // import com.bytetenns.datanode.common.metrics.Prometheus;
-import com.bytetenns.datanode.network.AbstractChannelHandler;
-import com.bytetenns.datanode.network.RequestWrapper;
-import com.bytetenns.datanode.network.file.DefaultFileSendTask;
-import com.bytetenns.datanode.network.file.FilePacket;
-import com.bytetenns.datanode.network.file.FileReceiveHandler;
+import com.bytetenns.network.AbstractChannelHandler;
+import com.bytetenns.network.RequestWrapper;
+import com.bytetenns.network.file.DefaultFileSendTask;
+import com.bytetenns.network.file.FilePacket;
+import com.bytetenns.network.file.FileReceiveHandler;
 import com.bytetenns.datanode.namenode.NameNodeClient;
 import com.bytetenns.datanode.model.common.GetFileRequest;
 import com.bytetenns.datanode.model.datanode.PeerNodeAwareRequest;
@@ -22,7 +22,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
 
 // import com.bytetenns.dfs.common.metrics.MetricsHandler;
-import com.bytetenns.datanode.network.BaseChannelInitializer;
+import com.bytetenns.network.BaseChannelInitializer;
 import com.bytetenns.datanode.server.HttpFileServerHandler;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
