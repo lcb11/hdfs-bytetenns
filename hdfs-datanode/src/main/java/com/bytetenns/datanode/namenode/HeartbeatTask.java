@@ -16,14 +16,14 @@ import lombok.extern.slf4j.Slf4j;
  * @return
  **/
 
- @Slf4j
+@Slf4j
 public class HeartbeatTask implements Runnable {
     private DataNodeConfig datanodeConfig;
     private ChannelHandlerContext ctx;
 
     public HeartbeatTask(ChannelHandlerContext ctx, DataNodeConfig datanodeConfig) {
-        this.ctx = ctx;
-        this.datanodeConfig = datanodeConfig;
+        this.ctx = ctx; // 获取上下文共享变量
+        this.datanodeConfig = datanodeConfig; // 配置datenode
     }
 
     @Override

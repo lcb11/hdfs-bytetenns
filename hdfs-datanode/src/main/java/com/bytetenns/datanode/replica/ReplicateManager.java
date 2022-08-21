@@ -1,9 +1,9 @@
 package com.bytetenns.datanode.replica;
 
 
-import com.bytetenns.enums.CommandType;
-import com.bytetenns.scheduler.DefaultScheduler;
-import com.bytetenns.utils.FileUtil;
+import com.bytetenns.common.enums.CommandType;
+import com.bytetenns.common.scheduler.DefaultScheduler;
+import com.bytetenns.common.utils.FileUtil;
 import com.bytetenns.datanode.namenode.NameNodeClient;
 import com.bytetenns.datanode.storage.StorageManager;
 import com.bytetenfs.dfs.model.datanode.ReplicaCommand;

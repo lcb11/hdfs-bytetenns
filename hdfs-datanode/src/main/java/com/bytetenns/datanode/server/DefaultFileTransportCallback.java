@@ -1,9 +1,9 @@
 package com.bytetenns.datanode.server;
 
 // import com.ruyuan.dfs.common.metrics.Prometheus;
-import com.bytetenns.network.file.FileAttribute;
+import com.bytetenns.common.network.file.FileAttribute;
 import com.bytetenns.datanode.namenode.NameNodeClient;
-import com.bytetenns.network.file.FileTransportCallback;
+import com.bytetenns.common.network.file.FileTransportCallback;
 import com.bytetenns.datanode.storage.StorageManager;
 import lombok.extern.slf4j.Slf4j;
 
