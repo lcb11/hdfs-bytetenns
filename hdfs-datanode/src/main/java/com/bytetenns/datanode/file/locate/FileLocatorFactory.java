@@ -3,7 +3,7 @@ package com.bytetenns.datanode.file.locate;
 /**
  * 文件定位器工厂
  *
- * @author Sun Dasheng
+ * @author gongwei
  */
 public class FileLocatorFactory {
 

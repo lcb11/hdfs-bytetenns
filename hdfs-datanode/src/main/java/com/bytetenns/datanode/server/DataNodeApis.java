@@ -13,8 +13,8 @@ import com.bytetenns.scheduler.DefaultScheduler;
 import com.bytetenns.datanode.conf.DataNodeConfig;
 import com.bytetenns.datanode.namenode.NameNodeClient;
 import com.bytetenns.datanode.replica.PeerDataNodes;
-import com.ruyuan.dfs.model.GetFileRequest;
-import com.ruyuan.dfs.model.datanode.PeerNodeAwareRequest;
+import com.bytetenns.dfs.model.GetFileRequest;
+import com.bytetenns.dfs.model.datanode.PeerNodeAwareRequest;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ import java.util.Set;
 /**
  * DataNode节点的服务端接口
  *
- * @author Sun Dasheng
+ * @author gongwei
  */
 @Slf4j
 public class DataNodeApis extends AbstractChannelHandler {
@@ -112,13 +112,15 @@ public class DataNodeApis extends AbstractChannelHandler {
             String path = transportCallback.getPath(filename);
             File file = new File(path);
             log.info("收到下载文件请求：{}", filename);
-            Prometheus.incCounter("datanode_get_file_count", "DataNode收到的下载文件请求数量");
-            Prometheus.hit("datanode_get_file_qps", "DataNode瞬时下载文件QPS");
+            // Prometheus.incCounter("datanode_get_file_count", "DataNode收到的下载文件请求数量");
+            // Prometheus.hit("datanode_get_file_qps", "DataNode瞬时下载文件QPS");
             // 创建FileSendTask
             DefaultFileSendTask fileSendTask = new DefaultFileSendTask(file, filename,
                     (SocketChannel) requestWrapper.getCtx().channel(),
-                    (total, current, progress, currentReadBytes) -> Prometheus.hit("datanode_disk_read_bytes",
-                            "DataNode瞬时读磁盘字节大小", currentReadBytes));
+                    (total, current, progress, currentReadBytes) -> 
+                    // Prometheus.hit("datanode_disk_read_bytes", "DataNode瞬时读磁盘字节大小", currentReadBytes)
+                    log.info("DataNode正在读磁盘...")
+                    );
             fileSendTask.execute(false);
         } catch (Exception e) {
             log.error("文件下载失败：", e);
@@ -131,10 +133,10 @@ public class DataNodeApis extends AbstractChannelHandler {
     private void handleFileTransferRequest(RequestWrapper requestWrapper) {
         // 解析上传文件请求
         FilePacket filePacket = FilePacket.parseFrom(requestWrapper.getRequest().getBody());
-        if (filePacket.getType() == FilePacket.HEAD) {
-            Prometheus.incCounter("datanode_put_file_count", "DataNode收到的上传文件请求数量");
-            Prometheus.hit("datanode_put_file_qps", "DataNode瞬时上传文件QPS");
-        }
+        // if (filePacket.getType() == FilePacket.HEAD) {
+        //     Prometheus.incCounter("datanode_put_file_count", "DataNode收到的上传文件请求数量");
+        //     Prometheus.hit("datanode_put_file_qps", "DataNode瞬时上传文件QPS");
+        // }
         fileReceiveHandler.handleRequest(filePacket);
     }
 }

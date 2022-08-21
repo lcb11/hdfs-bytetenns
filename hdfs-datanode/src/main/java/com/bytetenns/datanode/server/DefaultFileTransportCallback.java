@@ -3,6 +3,7 @@ package com.bytetenns.datanode.server;
 // import com.ruyuan.dfs.common.metrics.Prometheus;
 import com.bytetenns.network.file.FileAttribute;
 import com.bytetenns.datanode.namenode.NameNodeClient;
+import com.bytetenns.network.file.FileTransportCallback;
 import com.bytetenns.datanode.storage.StorageManager;
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,10 +12,10 @@ import java.io.IOException;
 /**
  * 默认的文件传输回调
  *
- * @author Sun Dasheng
+ * @author gongwei
  */
 @Slf4j
-public class DefaultFileTransportCallback {
+public class DefaultFileTransportCallback implements FileTransportCallback {
 
     private NameNodeClient nameNodeClient;
     private StorageManager storageManager;

@@ -7,7 +7,7 @@ import java.io.File;
  * <p>
  * 将文件名的 "/" 改为 "-"
  *
- * @author Sun Dasheng
+ * @author gongwei
  */
 public class SimpleFileLocator extends AbstractFileLocator {
 
