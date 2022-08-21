@@ -9,4 +9,9 @@ package com.bytetenns.namenode.shard;
    * @return
    **/
 public class ShardingManager {
+
+    public int getNameNodeIdByFileName(String filename) {
+
+        return 1;
+    }
 }
