@@ -13,7 +13,6 @@ import com.bytetenns.common.netty.NettyPacket;
 import com.bytetenns.common.network.NetClient;
 import com.bytetenns.common.scheduler.DefaultScheduler;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.ruyuan.dfs.model.namenode.UserEntity;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;

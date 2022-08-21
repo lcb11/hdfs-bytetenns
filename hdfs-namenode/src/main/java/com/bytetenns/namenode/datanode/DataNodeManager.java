@@ -31,7 +31,9 @@ import java.util.stream.Collectors;
 public class DataNodeManager {
 
     //private final UserManager userManager;
+    //采用hashmap保存每个datanodeInfo的信息
     private final Map<String, DataNodeInfo> dataNodes = new ConcurrentHashMap<>();
+    //副本任务的读写锁
     private final ReentrantReadWriteLock replicaLock = new ReentrantReadWriteLock();
     /**
      * <pre>
@@ -63,10 +65,10 @@ public class DataNodeManager {
     private final NameNodeConfig nameNodeConfig;
     private DiskNameSystem diskNameSystem;
 
-    public DataNodeManager(NameNodeConfig nameNodeConfig, DefaultScheduler defaultScheduler) {//, UserManager userManager
+    public DataNodeManager(NameNodeConfig nameNodeConfig, DefaultScheduler defaultScheduler) {
         this.nameNodeConfig = nameNodeConfig;
-        //this.userManager = userManager;
         long dataNodeAliveThreshold = nameNodeConfig.getDataNodeAliveCheckInterval();
+        //DataNodeAliveMonitor()监控datanode是否存活线程
         defaultScheduler.schedule("DataNode存活检测", new DataNodeAliveMonitor(),
                 dataNodeAliveThreshold, dataNodeAliveThreshold, TimeUnit.MILLISECONDS);
     }
@@ -135,8 +137,9 @@ public class DataNodeManager {
      */
     private List<DataNodeInfo> selectDataNodeFromList(List<DataNodeInfo> dataNodeList, int requiredNodeCount,
                                                       String filename) throws NameNodeException {
+        //已经存在datanode的数量
         int existCount = 0;
-
+        //最小存储节点的大小
         long minStoredDataSize = -1;
         /*
          * 在上传小文件的时候，文件大小较小，为了避免流量都打到同一台DataNode机器。
@@ -146,18 +149,24 @@ public class DataNodeManager {
          * 如果误差范围小于1G,则按存储空间大小从低到高进行获取
          *
          */
+        //能存当前副本任务的datanode
         List<DataNodeInfo> candidateNodes = new ArrayList<>(10);
+        //1G的大小
         long delta = 1024 * 1024 * 1024;
         for (DataNodeInfo dataNodeInfo : dataNodeList) {
+            //如果当前datanode存在filename，existCount加一，跳过当前datanode
             if (dataNodeContainsFiles(dataNodeInfo.getHostname(), filename)) {
                 existCount++;
                 continue;
             }
+            //获取当前datanode已经存了多大的空间
             long storedDataSize = dataNodeInfo.getStoredDataSize();
             if (minStoredDataSize < 0) {
                 minStoredDataSize = storedDataSize;
             }
+            //这一步主要保证各个datanode之间已经存储空间的误差在1G以内
             if (dataNodeInfo.getStoredDataSize() - minStoredDataSize <= delta) {
+                //将该datanode加入到候选集合中
                 candidateNodes.add(dataNodeInfo);
             }
         }
@@ -167,14 +176,19 @@ public class DataNodeManager {
             return candidateNodes;
         } else if (candidateNodes.size() < requiredNodeCount) {
             // 误差在1G以内的DataNode数量小于需要的节点数量，则需要从datanode列表中继续取到足够的节点。
+            //还需要多少个datanode节点
             int remainNodeCount = requiredNodeCount - candidateNodes.size();
             for (DataNodeInfo dataNodeInfo : dataNodeList) {
+                //如果候选集合中存在当前dataNodeInfo，或者该datanode存有当前文件则跳过
                 if (candidateNodes.contains(dataNodeInfo) ||
                         dataNodeContainsFiles(dataNodeInfo.getHostname(), filename)) {
                     continue;
                 }
+                //将该datanode加入到候选集合中
                 candidateNodes.add(dataNodeInfo);
+                //需要datanode的数量减一
                 remainNodeCount--;
+                //找到的datanode数量加一
                 findCount++;
                 if (remainNodeCount <= 0) {
                     return candidateNodes;
@@ -227,17 +241,19 @@ public class DataNodeManager {
             return;
         }
         for (FileInfo fileInfo : filesByDataNode.values()) {
-            // 找到一个可读取文件的DataNode
+            // 找到一个可读取文件的DataNode，即存有当前文件的datanode
             DataNodeInfo sourceDataNode = chooseReadableDataNodeByFileName(fileInfo.getFileName(), dataNodeInfo);
             if (sourceDataNode == null) {
                 log.warn("警告：找不到适合的DataNode用来获取文件：" + fileInfo.getFileName());
                 continue;
             }
+            //为复制任务申请副本，申请的dataNode需要排除目标DataNode，sourceDataNode为需要排除的datanode
             DataNodeInfo destDataNode = allocateReplicateDataNodes(fileInfo, sourceDataNode);
             if (destDataNode == null) {
                 log.warn("警告：找不到适合的DataNode用来Rebalance");
                 continue;
             }
+            //将该datanode和文件加入到副本复制任务
             ReplicaTask task = new ReplicaTask(fileInfo.getFileName(), sourceDataNode.getHostname(), sourceDataNode.getNioPort());
             log.info("创建副本复制任务：[filename={}, from={}, to={}]", fileInfo.getFileName(),
                     sourceDataNode.getHostname(), destDataNode.getHostname());
@@ -252,12 +268,14 @@ public class DataNodeManager {
      * @param excludeDataNode 排除的DataNode
      */
     private DataNodeInfo allocateReplicateDataNodes(FileInfo fileInfo, DataNodeInfo excludeDataNode) {
+        //获取可以写入的datanode
         List<DataNodeInfo> dataNodeInfos = dataNodes.values().stream()
                 .filter(dataNodeInfo -> !dataNodeInfo.equals(excludeDataNode) &&
                         dataNodeInfo.getStatus() == DataNodeInfo.STATUS_READY)
                 .sorted()
                 .collect(Collectors.toList());
         try {
+            //从DataNode集合中选择节点，但是要排除已经包含该文件的DataNode节点，选择一个datanode进行副本复制
             List<DataNodeInfo> dataNodesList = selectDataNodeFromList(dataNodeInfos,
                     1, fileInfo.getFileName());
             return dataNodesList.get(0);
@@ -272,7 +290,7 @@ public class DataNodeManager {
      * @param count    申请机器数量
      *                 为文件分配dataNode机器列表
      */
-    public List<DataNodeInfo> allocateDataNodes(String username, int count, String filename) throws Exception {
+   /* public List<DataNodeInfo> allocateDataNodes(String username, int count, String filename) throws Exception {
         //User user = userManager.getUser(username);
         Set<String> dataNodeSet = user.getStorageInfo().getDataNodesSet();
         if (dataNodeSet.isEmpty()) {
@@ -287,17 +305,18 @@ public class DataNodeManager {
                     .collect(Collectors.toList());
             return selectDataNodeFromList(dataNodeInfos, count, filename);
         }
-    }
+    }*/
 
     /**
      * 从内存数据结构中移除DataNode的文件列表并返回
      *
-     * @param hostname DataNode
+     * @param hostname DataNode名称
      * @return 该DataNode的文件列表
      */
     public Map<String, FileInfo> removeFileByDataNode(String hostname) {
         replicaLock.writeLock().lock();
         try {
+            //filesByDataNode每个DataNode 存储的文件列表，将改datanode中保存的文件从datanodemanager中移除
             return filesByDataNode.remove(hostname);
         } finally {
             replicaLock.writeLock().unlock();
@@ -306,11 +325,14 @@ public class DataNodeManager {
 
 
     public boolean dataNodeContainsFiles(String hostname, String filename) {
+        //获取副本读锁
         replicaLock.readLock().lock();
         try {
+            //获取当前名为hostname的datanode的所有文件
             Map<String, FileInfo> files = filesByDataNode.getOrDefault(hostname, new HashMap<>(PrettyCodes.trimMapSize()));
             return files.containsKey(filename);
         } finally {
+            //释放锁
             replicaLock.readLock().unlock();
         }
     }
@@ -394,8 +416,10 @@ public class DataNodeManager {
      * @return 可读的DataNode
      */
     public DataNodeInfo chooseReadableDataNodeByFileName(String filename, DataNodeInfo toRemoveDataNode) {
+        //保证当前datanode只有一个副本任务在读写
         replicaLock.readLock().lock();
         try {
+            //通过文件名获取当前文件所存储在的datanode
             List<DataNodeInfo> dataNodeInfos = replicaByFilename.get(filename);
             if (dataNodeInfos == null) {
                 return null;
@@ -406,11 +430,14 @@ public class DataNodeManager {
             if (dataNodeInfos.isEmpty()) {
                 return null;
             }
+            //获取存储了当前文件的所有datanode，即有几个datanode存储了当前文件
             int size = dataNodeInfos.size();
             Random random = new Random();
             int i = random.nextInt(size);
+            //在这几个datanode中随机返回一个datanode
             return dataNodeInfos.get(i);
         } finally {
+            //释放锁
             replicaLock.readLock().unlock();
         }
     }
@@ -515,7 +542,7 @@ public class DataNodeManager {
      * @param addNum   增加副本数量
      * @param filename 文件名
      */
-    public void addReplicaNum(String username, int addNum, String filename) throws Exception {
+    /*public void addReplicaNum(String username, int addNum, String filename) throws Exception {
         List<DataNodeInfo> dataNodeInfos = allocateDataNodes(username, addNum, filename);
         DataNodeInfo sourceDataNode = chooseReadableDataNodeByFileName(filename);
         Node node = diskNameSystem.unsafeListFiles(filename);
@@ -528,7 +555,7 @@ public class DataNodeManager {
                     sourceDataNode.getHostname(), destDataNode.getHostname());
             destDataNode.addReplicaTask(task);
         }
-    }
+    }*/
 
     /**
      * dataNode是否存活的监控线程
@@ -543,6 +570,7 @@ public class DataNodeManager {
         public void run() {
             Iterator<DataNodeInfo> iterator = dataNodes.values().iterator();
             List<DataNodeInfo> toRemoveDataNode = new ArrayList<>();
+            //遍历所有的dataNodeInfo
             while (iterator.hasNext()) {
                 DataNodeInfo next = iterator.next();
                 long currentTimeMillis = System.currentTimeMillis();
@@ -550,11 +578,15 @@ public class DataNodeManager {
                     continue;
                 }
                 log.info("DataNode存活检测超时，被移除：[hostname={}, current={}, nodeLatestHeartbeatTime={}]",
+
                         next, DateUtils.format(new Date(currentTimeMillis)), DateUtils.format(new Date(next.getLatestHeartbeatTime())));
+                //datanode丢失，将其从集合中移除
                 iterator.remove();
+                //将丢失的datanode加入到移除datanode的集合中
                 toRemoveDataNode.add(next);
             }
             for (DataNodeInfo info : toRemoveDataNode) {
+                //如果datanode宕机了，将保存在datanode里面的文件信息进行复制
                 createLostReplicaTask(info);
             }
         }

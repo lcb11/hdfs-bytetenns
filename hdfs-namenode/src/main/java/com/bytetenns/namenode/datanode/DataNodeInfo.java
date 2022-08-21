@@ -28,13 +28,13 @@ public class DataNodeInfo implements Comparable<DataNodeInfo>{
 
     //datanode Id
     private Integer nodeId;
-    //datanode所在主机地址
+    //datanode的名字
     private String hostname;
     //http请求端口号
     private int httpPort;
     //nio通道端口号
     private int nioPort;
-    //最晚心跳时间
+    //下一次心跳时间
     private long latestHeartbeatTime;
     //当前datanode存储的大小
     private volatile long storedDataSize;
@@ -52,7 +52,9 @@ public class DataNodeInfo implements Comparable<DataNodeInfo>{
         this.nioPort = nioPort;
         this.httpPort = httpPort;
         this.latestHeartbeatTime = latestHeartbeatTime;
+        //当dataNode初始化时，已存储大小初始化为0
         this.storedDataSize = 0L;
+        //状态为初始化状态
         this.status = STATUS_INIT;
     }
 
@@ -62,6 +64,7 @@ public class DataNodeInfo implements Comparable<DataNodeInfo>{
      * @param fileSize 文件大小
      */
     public void addStoredDataSize(long fileSize) {
+        //采用同步锁，防止在扩大存储空间时，有其他操作对datanode进行操作
         synchronized (this) {
             this.storedDataSize += fileSize;
             this.freeSpace -= fileSize;
@@ -74,6 +77,7 @@ public class DataNodeInfo implements Comparable<DataNodeInfo>{
      * @param task 任务
      */
     public void addReplicaTask(ReplicaTask task) {
+        //将任务加入副本复制队列
         replicaTasks.add(task);
     }
 
@@ -85,6 +89,7 @@ public class DataNodeInfo implements Comparable<DataNodeInfo>{
     public List<ReplicaTask> pollReplicaTask(int maxNum) {
         List<ReplicaTask> result = new LinkedList<>();
 
+        //遍历副本复制队列，将副本任务加入结果集中
         for (int i = 0; i < maxNum; i++) {
             ReplicaTask task = replicaTasks.poll();
             if (task == null) {
@@ -95,6 +100,11 @@ public class DataNodeInfo implements Comparable<DataNodeInfo>{
         return result;
     }
 
+    /**
+     * 获取副本删除任务
+     *
+     * @return task任务
+      **/
     public List<RemoveReplicaTask> pollRemoveReplicaTask(int maxNum) {
         List<RemoveReplicaTask> result = new LinkedList<>();
 
