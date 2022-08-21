@@ -1,13 +1,13 @@
 package com.bytetenns.ha;
 
 
+import com.bytetenns.common.network.NetClient;
+import com.bytetenns.common.scheduler.DefaultScheduler;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
 
 import com.bytetenns.dfs.model.backup.BackupNodeInfo;
-import com.bytetenns.network.NetClient;
-import com.bytetenns.scheduler.DefaultScheduler;
 
 /**
  * 负责和BackupNode进行连接的管理器
