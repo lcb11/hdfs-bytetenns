@@ -9,7 +9,7 @@ import java.io.File;
 /**
  * 抽象文件路径定位器
  *
- * @author Sun Dasheng
+ * @author gongwei
  */
 @Slf4j
 public abstract class AbstractFileLocator implements FileLocator {

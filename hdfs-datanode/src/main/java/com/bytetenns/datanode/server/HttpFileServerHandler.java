@@ -19,7 +19,7 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 /**
  * 用于HTTP下载文件的Netty服务端
  *
- * @author Sun Dasheng
+ * @author gongwei
  */
 @Slf4j
 public class HttpFileServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {

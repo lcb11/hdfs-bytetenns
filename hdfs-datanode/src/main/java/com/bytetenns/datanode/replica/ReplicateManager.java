@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 副本复制管理组件
  *
- * @author Sun Dasheng
+ * @author gongwei
  */
 @Slf4j
 public class ReplicateManager {

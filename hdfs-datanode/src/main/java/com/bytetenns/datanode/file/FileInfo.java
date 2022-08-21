@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 /**
  * 文件信息
  *
- * @author Sun Dasheng
+ * @author gongwei
  */
 @Data
 @AllArgsConstructor
