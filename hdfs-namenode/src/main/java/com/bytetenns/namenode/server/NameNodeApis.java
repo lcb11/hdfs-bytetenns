@@ -51,7 +51,6 @@ import java.util.stream.Collectors;
 /**
  * NameNode网络请求接口处理器
  *
- * @author Sun Dasheng
  */
 @Slf4j
 public class NameNodeApis extends AbstractChannelHandler {
@@ -81,11 +80,11 @@ public class NameNodeApis extends AbstractChannelHandler {
         this.mode = nameNodeConfig.getMode();
         this.defaultScheduler = defaultScheduler;
         this.fetchEditLogBuffer = new FetchEditLogBuffer(diskNameSystem);
-        this.shardingManager.addOnSlotAllocateCompletedListener(slots -> {
-            if (slotsChanged.compareAndSet(false, true)) {
-                this.slots = slots;
-            }
-        });
+//        this.shardingManager.addOnSlotAllocateCompletedListener(slots -> {
+//            if (slotsChanged.compareAndSet(false, true)) {
+//                this.slots = slots;
+//            }
+//        });
         FsImageFileTransportCallback fsImageFileTransportCallback = new FsImageFileTransportCallback(nameNodeConfig,
                 defaultScheduler, diskNameSystem);
         this.fileReceiveHandler = new FileReceiveHandler(fsImageFileTransportCallback);
@@ -109,14 +108,14 @@ public class NameNodeApis extends AbstractChannelHandler {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        String token = userManager.getTokenByChannel(ctx.channel());
-        String username = userManager.logout(ctx.channel());
-        if (username != null && token != null) {
-            NettyPacket nettyPacket = NettyPacket.buildPacket(new byte[0], PacketType.CLIENT_LOGOUT);
-            nettyPacket.setUsername(username);
-            nettyPacket.setUserToken(token);
-            broadcast(nettyPacket);
-        }
+//        String token = userManager.getTokenByChannel(ctx.channel());
+//        String username = userManager.logout(ctx.channel());
+//        if (true) {
+//            NettyPacket nettyPacket = NettyPacket.buildPacket(new byte[0], PacketType.CLIENT_LOGOUT);
+//            nettyPacket.setUsername(username);
+//            nettyPacket.setUserToken(token);
+//            broadcast(nettyPacket);
+//        }
         if (backupNodeInfoHolder != null && backupNodeInfoHolder.match(ctx.channel())) {
             backupNodeInfoHolder = null;
         }
@@ -125,10 +124,10 @@ public class NameNodeApis extends AbstractChannelHandler {
 
     @Override
     protected boolean handlePackage(ChannelHandlerContext ctx, NettyPacket request) {
-        boolean consumedMsg = peerNameNodes.onMessage(request);
-        if (consumedMsg) {
-            return true;
-        }
+//        boolean consumedMsg = peerNameNodes.onMessage(request);
+//        if (consumedMsg) {
+//            return true;
+//        }
         if (request.isError()) {
             // 在请求转发的情况下，如果目标NameNode节点发生未知异常，然后返回的结果是异常的，
             // 而源NameNode正常处理流程会出现空指针异常，从而出现死循环。
@@ -149,92 +148,92 @@ public class NameNodeApis extends AbstractChannelHandler {
         });
         try {
             switch (packetType) {
-                case DATA_NODE_REGISTER:
+                case DATA_NODE_REGISTER://1.datanode注册信息
                     handleDataNodeRegisterRequest(requestWrapper);
                     break;
-                case HEART_BRET:
+                case HEART_BRET://2.处理datanode心跳
                     handleDataNodeHeartbeatRequest(requestWrapper);
                     break;
-                case MKDIR:
+                case MKDIR://3.新建文件,向namenode发送请求
                     handleMkdirRequest(requestWrapper);
                     break;
-                case FETCH_EDIT_LOG:
+                case FETCH_EDIT_LOG://获取editlog的请求
                     handleFetchEditLogRequest(requestWrapper);
                     break;
-                case TRANSFER_FILE:
+                case TRANSFER_FILE://二进制数据包处理
                     handleFileTransferRequest(requestWrapper);
                     break;
-                case REPORT_STORAGE_INFO:
+                case REPORT_STORAGE_INFO://dataNode上报存储信息
                     handleDataNodeReportStorageInfoRequest(requestWrapper);
                     break;
-                case CREATE_FILE:
+                case CREATE_FILE://创建文件
                     handleCreateFileRequest(requestWrapper);
                     break;
-                case GET_DATA_NODE_FOR_FILE:
+                case GET_DATA_NODE_FOR_FILE://获取file所在的datanode节点
                     handleGetDataNodeForFileRequest(requestWrapper);
                     break;
-                case REPLICA_RECEIVE:
+                case REPLICA_RECEIVE://收到副本的请求
                     handleReplicaReceiveRequest(requestWrapper);
                     break;
-                case REMOVE_FILE:
+                case REMOVE_FILE://移除文件
                     handleRemoveFileRequest(requestWrapper);
                     break;
-                case READ_ATTR:
+                case READ_ATTR://读属性
                     handleReadAttrRequest(requestWrapper);
                     break;
-                case AUTHENTICATE:
+                case AUTHENTICATE://客户端认证
                     handleAuthenticateRequest(requestWrapper);
                     break;
-                case REPORT_BACKUP_NODE_INFO:
+                case REPORT_BACKUP_NODE_INFO://获取到backup信息的回应
                     handleReportBackupNodeInfoRequest(requestWrapper);
                     break;
-                case FETCH_BACKUP_NODE_INFO:
+                case FETCH_BACKUP_NODE_INFO://获取backup信息
                     handleFetchBackupNodeInfoRequest(requestWrapper);
                     break;
-                case CREATE_FILE_CONFIRM:
+                case CREATE_FILE_CONFIRM://创建文件确认
                     handleCreateFileConfirmRequest(requestWrapper);
                     break;
-                case NAME_NODE_PEER_AWARE:
-                    handleNameNodePeerAwareRequest(requestWrapper);
-                    break;
-                case NAME_NODE_CONTROLLER_VOTE:
-                    controllerManager.onReceiveControllerVote(requestWrapper);
-                    break;
-                case NAME_NODE_SLOT_BROADCAST:
-                    controllerManager.onReceiveSlots(requestWrapper);
-                    break;
-                case RE_BALANCE_SLOTS:
-                    controllerManager.onRebalanceSlots(requestWrapper);
-                    break;
-                case FETCH_SLOT_METADATA:
-                    controllerManager.writeMetadataToPeer(requestWrapper);
-                    break;
-                case FETCH_SLOT_METADATA_RESPONSE:
-                    controllerManager.onFetchMetadata(requestWrapper);
-                    break;
-                case FETCH_SLOT_METADATA_COMPLETED:
-                    controllerManager.onLocalControllerFetchSlotMetadataCompleted(requestWrapper);
-                    break;
-                case FETCH_SLOT_METADATA_COMPLETED_BROADCAST:
-                    controllerManager.onRemoteControllerFetchSlotMetadataCompleted(requestWrapper);
-                    break;
-                case REMOVE_METADATA_COMPLETED:
-                    controllerManager.onRemoveMetadataCompleted(requestWrapper);
-                    break;
-                case CLIENT_LOGOUT:
-                    log.debug("收到其他集群的客户端退出登录请求: [username={}]", request.getUserName());
-                    userManager.logout(request.getUserName(), request.getUserToken());
-                    break;
-                case USER_CHANGE_EVENT:
-                    userManager.onUserChangeEvent(request);
-                    break;
-                case FETCH_USER_INFO:
-                    handleFetchUserInfoRequest(requestWrapper);
-                    break;
+//                case NAME_NODE_PEER_AWARE:
+//                    handleNameNodePeerAwareRequest(requestWrapper);
+//                    break;
+//                case NAME_NODE_CONTROLLER_VOTE:
+//                    controllerManager.onReceiveControllerVote(requestWrapper);
+//                    break;
+//                case NAME_NODE_SLOT_BROADCAST:
+//                    controllerManager.onReceiveSlots(requestWrapper);
+//                    break;
+//                case RE_BALANCE_SLOTS:
+//                    controllerManager.onRebalanceSlots(requestWrapper);
+//                    break;
+//                case FETCH_SLOT_METADATA:
+//                    controllerManager.writeMetadataToPeer(requestWrapper);
+//                    break;
+//                case FETCH_SLOT_METADATA_RESPONSE:
+//                    controllerManager.onFetchMetadata(requestWrapper);
+//                    break;
+//                case FETCH_SLOT_METADATA_COMPLETED:
+//                    controllerManager.onLocalControllerFetchSlotMetadataCompleted(requestWrapper);
+//                    break;
+//                case FETCH_SLOT_METADATA_COMPLETED_BROADCAST:
+//                    controllerManager.onRemoteControllerFetchSlotMetadataCompleted(requestWrapper);
+//                    break;
+//                case REMOVE_METADATA_COMPLETED:
+//                    controllerManager.onRemoveMetadataCompleted(requestWrapper);
+//                    break;
+//                case CLIENT_LOGOUT:
+//                    log.debug("收到其他集群的客户端退出登录请求: [username={}]", request.getUserName());
+//                    userManager.logout(request.getUserName(), request.getUserToken());
+//                    break;
+//                case USER_CHANGE_EVENT:
+//                    userManager.onUserChangeEvent(request);
+//                    break;
+//                case FETCH_USER_INFO:
+//                    handleFetchUserInfoRequest(requestWrapper);
+//                    break;
                 case LIST_FILES:
                     handleListFilesRequest(requestWrapper);
                     break;
-                case TRASH_RESUME:
+                case TRASH_RESUME://文件在垃圾箱放回原处的请求
                     handleTrashResumeRequest(requestWrapper);
                     break;
                 case NEW_PEER_NODE_INFO:
@@ -359,9 +358,10 @@ public class NameNodeApis extends AbstractChannelHandler {
                     .setReplica(replica)
                     .build();
             requestWrapper.sendResponse(response);
-        } else {
-            forwardRequestToOtherNameNode(nodeId, requestWrapper);
         }
+//        else {
+//            forwardRequestToOtherNameNode(nodeId, requestWrapper);
+//        }
     }
 
     /**
@@ -391,8 +391,8 @@ public class NameNodeApis extends AbstractChannelHandler {
         ClientNameNodeInfo.Builder builder = ClientNameNodeInfo.newBuilder();
         Map<String, String> config = nameNodeConfig.getConfig();
         builder.putAllConfig(config);
-        Map<Integer, Integer> slotNodeMap = shardingManager.getSlotNodeMap();
-        builder.putAllSlots(slotNodeMap);
+//        Map<Integer, Integer> slotNodeMap = shardingManager.getSlotNodeMap();
+//        builder.putAllSlots(slotNodeMap);
         if (backupNodeInfoHolder != null) {
             BackupNodeInfo backupNodeInfo = backupNodeInfoHolder.getBackupNodeInfo();
             builder.setBackup(backupNodeInfo.getHostname() + ":" + backupNodeInfo.getPort());
@@ -417,33 +417,35 @@ public class NameNodeApis extends AbstractChannelHandler {
 
     public Node listNode(String basePath) throws InvalidProtocolBufferException {
         Node node = diskNameSystem.listFiles(basePath, 1);
-        return maybeFetchFromOtherNode(basePath, node);
+//        return maybeFetchFromOtherNode(basePath, node);
+        return node;
     }
+
 
     /**
      * 从别的节点中获取用户文件列表
      */
-    private Node maybeFetchFromOtherNode(String basePath, Node node) throws InvalidProtocolBufferException {
-        Node ret = node;
-        if (NameNodeLaunchMode.CLUSTER.equals(nameNodeConfig.getMode())) {
-            ListFileRequest listFileRequest = ListFileRequest.newBuilder()
-                    .setPath(basePath)
-                    .build();
-            NettyPacket request = NettyPacket.buildPacket(listFileRequest.toByteArray(), PacketType.LIST_FILES);
-            List<NettyPacket> responses = peerNameNodes.broadcastSync(request);
-            for (NettyPacket response : responses) {
-                INode iNode = INode.parseFrom(response.getBody());
-                iNode.getPath();
-                if (iNode.getPath().length() != 0) {
-                    Node merge = merge(ret, iNode);
-                    if (ret == null) {
-                        ret = merge;
-                    }
-                }
-            }
-        }
-        return ret;
-    }
+//    private Node maybeFetchFromOtherNode(String basePath, Node node) throws InvalidProtocolBufferException {
+//        Node ret = node;
+//        if (NameNodeLaunchMode.CLUSTER.equals(nameNodeConfig.getMode())) {
+//            ListFileRequest listFileRequest = ListFileRequest.newBuilder()
+//                    .setPath(basePath)
+//                    .build();
+//            NettyPacket request = NettyPacket.buildPacket(listFileRequest.toByteArray(), PacketType.LIST_FILES);
+//            List<NettyPacket> responses = peerNameNodes.broadcastSync(request);
+//            for (NettyPacket response : responses) {
+//                INode iNode = INode.parseFrom(response.getBody());
+//                iNode.getPath();
+//                if (iNode.getPath().length() != 0) {
+//                    Node merge = merge(ret, iNode);
+//                    if (ret == null) {
+//                        ret = merge;
+//                    }
+//                }
+//            }
+//        }
+//        return ret;
+//    }
 
     /**
      * 合并两个节点
@@ -471,8 +473,9 @@ public class NameNodeApis extends AbstractChannelHandler {
         } else if (addReplicaNum == 0) {
             requestWrapper.sendResponse();
         } else {
-            dataNodeManager.addReplicaNum(userName, addReplicaNum, fullPath);
-            requestWrapper.sendResponse();
+            throw new NameNodeException("修改失败，不支持该操作");
+//            dataNodeManager.addReplicaNum(userName, addReplicaNum, fullPath);
+//            requestWrapper.sendResponse();
         }
     }
 
@@ -550,14 +553,14 @@ public class NameNodeApis extends AbstractChannelHandler {
      */
     private void handleReplicaRemoveRequest(RequestWrapper requestWrapper) throws InvalidProtocolBufferException {
         InformReplicaReceivedRequest request = InformReplicaReceivedRequest.parseFrom(requestWrapper.getRequest().getBody());
-        boolean broadcast = broadcast(requestWrapper.getRequest());
+//        boolean broadcast = broadcast(requestWrapper.getRequest());
         log.info("收到DataNod上报的存储移除的信息：[hostname={}, filename={}]", request.getHostname(), request.getFilename());
         DataNodeInfo dataNode = dataNodeManager.getDataNode(request.getHostname());
         // 所有节点都需要维护DataNode节点存储信息。
         dataNode.addStoredDataSize(-request.getFileSize());
-        if (!broadcast) {
+//        if (!broadcast) {
             requestWrapper.sendResponse();
-        }
+//        }
     }
 
     /**
@@ -573,11 +576,11 @@ public class NameNodeApis extends AbstractChannelHandler {
             dataNode.setStatus(DataNodeInfo.STATUS_READY);
         }
         List<UserEntity> usersList = newPeerDataNodeInfo.getUsersList();
-        for (UserEntity userEntity : usersList) {
-            User user = new User(userEntity.getUsername(), userEntity.getSecret(),
-                    userEntity.getCreateTime(), new User.StorageInfo());
-            userManager.addOrUpdateUser(user);
-        }
+//        for (UserEntity userEntity : usersList) {
+//            User user = new User(userEntity.getUsername(), userEntity.getSecret(),
+//                    userEntity.getCreateTime(), new User.StorageInfo());
+//            userManager.addOrUpdateUser(user);
+//        }
     }
 
 
@@ -633,6 +636,7 @@ public class NameNodeApis extends AbstractChannelHandler {
      */
     private void handleListFilesRequest(RequestWrapper requestWrapper) throws InvalidProtocolBufferException {
         ListFileRequest listFileRequest = ListFileRequest.parseFrom(requestWrapper.getRequest().getBody());
+        //
         Node node = diskNameSystem.listFiles(listFileRequest.getPath(), 1);
         INode response;
         if (node != null) {
@@ -646,67 +650,68 @@ public class NameNodeApis extends AbstractChannelHandler {
     /**
      * 处理抓取用户信息的请求
      */
-    private void handleFetchUserInfoRequest(RequestWrapper requestWrapper) {
-        List<UserEntity> collect = userManager.getAllUser().stream()
-                .map(User::toEntity)
-                .collect(Collectors.toList());
-        UserList response = UserList.newBuilder()
-                .addAllUserEntities(collect)
-                .build();
-        requestWrapper.sendResponse(response);
-    }
+//    private void handleFetchUserInfoRequest(RequestWrapper requestWrapper) {
+//        List<UserEntity> collect = userManager.getAllUser().stream()
+//                .map(User::toEntity)
+//                .collect(Collectors.toList());
+//        UserList response = UserList.newBuilder()
+//                .addAllUserEntities(collect)
+//                .build();
+//        requestWrapper.sendResponse(response);
+//    }
 
     /**
      * 处理节点发起连接后立即发送的NameNode集群信息请求
      */
-    private void handleNameNodePeerAwareRequest(RequestWrapper requestWrapper) throws Exception {
-        NettyPacket request = requestWrapper.getRequest();
-        ChannelHandlerContext ctx = requestWrapper.getCtx();
-        NameNodeAwareRequest nameNodeAwareRequest = NameNodeAwareRequest.parseFrom(request.getBody());
-        if (nameNodeAwareRequest.getIsClient()) {
-            /*
-             * 只有作为服务端的时候，才会保存新增的链接。
-             *
-             * 假设有一个连接 namenode03 -> namenode01
-             *
-             * 1、当namenode03建立好连接之后，会主动发送一个NAME_NODE_PEER_AWARE请求。
-             * 2、当namenode01收到之后，会保存连接，并发送一个NAME_NODE_PEER_AWARE请求请求给namenode03
-             * 3、当namenode03收到namenode01发送的NAME_NODE_PEER_AWARE请求时，就不再需要保存连接了。
-             *
-             */
-            PeerNameNode peerNameNode = peerNameNodes.addPeerNode(nameNodeAwareRequest.getNameNodeId(), (SocketChannel) ctx.channel(),
-                    nameNodeAwareRequest.getServer(), nameNodeConfig.getNameNodeId(), defaultScheduler);
-            if (peerNameNode != null) {
-                // 作为服务端收到连接请求也同时发送自身信息给别的节点
-                controllerManager.reportSelfInfoToPeer(peerNameNode, false);
-            }
-        }
-        controllerManager.onAwarePeerNameNode(nameNodeAwareRequest);
-    }
+//    private void handleNameNodePeerAwareRequest(RequestWrapper requestWrapper) throws Exception {
+//        NettyPacket request = requestWrapper.getRequest();
+//        ChannelHandlerContext ctx = requestWrapper.getCtx();
+//        NameNodeAwareRequest nameNodeAwareRequest = NameNodeAwareRequest.parseFrom(request.getBody());
+//        if (nameNodeAwareRequest.getIsClient()) {
+//            /*
+//             * 只有作为服务端的时候，才会保存新增的链接。
+//             *
+//             * 假设有一个连接 namenode03 -> namenode01
+//             *
+//             * 1、当namenode03建立好连接之后，会主动发送一个NAME_NODE_PEER_AWARE请求。
+//             * 2、当namenode01收到之后，会保存连接，并发送一个NAME_NODE_PEER_AWARE请求请求给namenode03
+//             * 3、当namenode03收到namenode01发送的NAME_NODE_PEER_AWARE请求时，就不再需要保存连接了。
+//             *
+//             */
+//            PeerNameNode peerNameNode = peerNameNodes.addPeerNode(nameNodeAwareRequest.getNameNodeId(), (SocketChannel) ctx.channel(),
+//                    nameNodeAwareRequest.getServer(), nameNodeConfig.getNameNodeId(), defaultScheduler);
+//            if (peerNameNode != null) {
+//                // 作为服务端收到连接请求也同时发送自身信息给别的节点
+//                controllerManager.reportSelfInfoToPeer(peerNameNode, false);
+//            }
+//        }
+//        controllerManager.onAwarePeerNameNode(nameNodeAwareRequest);
+//    }
 
     /**
      * 客户端上传文件后，向NameNode确认上传完成
      */
     private void handleCreateFileConfirmRequest(RequestWrapper requestWrapper) throws InvalidProtocolBufferException,
             RequestTimeoutException, InterruptedException, NameNodeException {
-        if (isNoAuth(requestWrapper)) {
-            return;
-        }
+//        if (isNoAuth(requestWrapper)) {
+//            return;
+//        }
         NettyPacket request = requestWrapper.getRequest();
         CreateFileRequest createFileRequest = CreateFileRequest.parseFrom(request.getBody());
         String realFilename = File.separator + request.getUserName() + createFileRequest.getFilename();
         int nodeId = getNodeId(realFilename);
-        if (this.nodeId == nodeId) {
+//        if (this.nodeId == nodeId) {
             if (request.getAck() != 0) {
                 dataNodeManager.waitFileReceive(realFilename, 3000);
             }
-            userManager.addStorageInfo(request.getUserName(), createFileRequest.getFileSize());
+            //增加用户的存储信息
+//            userManager.addStorageInfo(request.getUserName(), createFileRequest.getFileSize());
             CreateFileResponse response = CreateFileResponse.newBuilder()
                     .build();
             requestWrapper.sendResponse(response);
-        } else {
-            forwardRequestToOtherNameNode(nodeId, requestWrapper);
-        }
+//        } else {
+//            forwardRequestToOtherNameNode(nodeId, requestWrapper);
+//        }
     }
 
     /**
@@ -718,6 +723,7 @@ public class NameNodeApis extends AbstractChannelHandler {
         log.debug("收到抓取BackupNode的信息，返回结果：[hostname={}, port={}]",
                 backupNodeExist ? backupNodeInfoHolder.getBackupNodeInfo().getHostname() : null,
                 backupNodeExist ? backupNodeInfoHolder.getBackupNodeInfo().getPort() : null);
+
         NettyPacket response = NettyPacket.buildPacket(backupNodeExist ? backupNodeInfoHolder.getBackupNodeInfo().toByteArray() : new byte[0],
                 PacketType.FETCH_BACKUP_NODE_INFO);
         requestWrapper.sendResponse(response, requestWrapper.getRequestSequence());
@@ -729,19 +735,20 @@ public class NameNodeApis extends AbstractChannelHandler {
     private void handleReportBackupNodeInfoRequest(RequestWrapper requestWrapper) throws InvalidProtocolBufferException {
         // BackupNode上报信息
         BackupNodeInfo backupNodeInfo = BackupNodeInfo.parseFrom(requestWrapper.getRequest().getBody());
-        if (backupNodeInfoHolder != null && backupNodeInfoHolder.isActive()) {
-            log.info("收到BackupNode上报的信息，但是发现了2个BackupNode，拒绝请求：[hostname={}, port={}]",
-                    backupNodeInfo.getHostname(), backupNodeInfo.getPort());
-            NettyPacket resp = NettyPacket.buildPacket(new byte[0], PacketType.DUPLICATE_BACKUP_NODE);
-            requestWrapper.sendResponse(resp, null);
-            return;
-        }
+
+//        if (backupNodeInfoHolder != null && backupNodeInfoHolder.isActive()) {
+//            log.info("收到BackupNode上报的信息，但是发现了2个BackupNode，拒绝请求：[hostname={}, port={}]",
+//                    backupNodeInfo.getHostname(), backupNodeInfo.getPort());
+//            NettyPacket resp = NettyPacket.buildPacket(new byte[0], PacketType.DUPLICATE_BACKUP_NODE);
+//            requestWrapper.sendResponse(resp, null);
+//            return;
+//        }
         this.backupNodeInfoHolder = new BackupNodeInfoHolder(backupNodeInfo, requestWrapper.getCtx().channel());
         log.info("收到BackupNode上报的信息：[hostname={}, port={}]", backupNodeInfo.getHostname(), backupNodeInfo.getPort());
         NameNodeConf nameNodeConf = NameNodeConf.newBuilder()
                 .putAllValues(nameNodeConfig.getConfig())
                 .build();
-        requestWrapper.sendResponse(nameNodeConf);
+        requestWrapper.sendResponse(nameNodeConf);//发送接收到backup信息的回应
     }
 
     /**
@@ -750,14 +757,15 @@ public class NameNodeApis extends AbstractChannelHandler {
     private void handleAuthenticateRequest(RequestWrapper requestWrapper) throws InvalidProtocolBufferException, NameNodeException {
         AuthenticateInfoRequest request = AuthenticateInfoRequest.parseFrom(requestWrapper.getRequest().getBody());
         boolean isBroadcastRequest = requestWrapper.getRequest().getBroadcast();
-        if (!isBroadcastRequest) {
-            boolean authenticate = userManager.login(requestWrapper.getCtx().channel(), request.getAuthenticateInfo());
-            if (!authenticate) {
-                throw new NameNodeException("认证失败：" + request.getAuthenticateInfo());
-            }
+//        if (!isBroadcastRequest) {
+//            boolean authenticate = userManager.login(requestWrapper.getCtx().channel(), request.getAuthenticateInfo());
+//            if (!authenticate) {
+//                throw new NameNodeException("认证失败：" + request.getAuthenticateInfo());
+//            }
             log.info("收到认证请求：[authenticateInfo={}]", request.getAuthenticateInfo());
             // 获取用户认证成功后的Token信息，将这个Token信息发送给其他节点
-            String token = userManager.getTokenByChannel(requestWrapper.getCtx().channel());
+            String token = "Successful";
+//                    userManager.getTokenByChannel(requestWrapper.getCtx().channel());
             requestWrapper.getRequest().setUserToken(token);
             // 为了保证一致性，只有所有节点都认证通过了，才可以返回响应给客户端
             broadcastSync(requestWrapper);
@@ -766,14 +774,11 @@ public class NameNodeApis extends AbstractChannelHandler {
                     .setToken(token)
                     .build();
             requestWrapper.sendResponse(response);
-        } else {
-            // 代码走到这里表示客户端认证请求是别的节点广播过来的，只需要保存Token就行了
-            String userToken = requestWrapper.getRequest().getUserToken();
-            String username = request.getAuthenticateInfo().split(",")[0];
-            userManager.setToken(username, userToken);
-            requestWrapper.sendResponse();
-            log.info("收到别的节点广播过来的认证信息：[username={}, token={}]", username, userToken);
-        }
+
+//        userManager.setToken(username, userToken);
+//            requestWrapper.sendResponse();
+//            log.info("收到别的节点广播过来的认证信息：[username={}, token={}]", username, userToken);
+//        }
     }
 
     /**
@@ -791,17 +796,18 @@ public class NameNodeApis extends AbstractChannelHandler {
             throw new NameNodeException("未通过认证的请求");
         }
         String userName = request.getUserName();
-        if (!userManager.isUserToken(userName, userToken)) {
-            log.warn("收到一个未认证的请求, 已被拦截: [channel={}, packetType={}]",
-                    NetUtils.getChannelId(requestWrapper.getCtx().channel()), request.getPacketType());
-            throw new NameNodeException("未通过认证的请求");
-        } else {
+//        if (!userManager.isUserToken(userName, userToken)) {
+//            log.warn("收到一个未认证的请求, 已被拦截: [channel={}, packetType={}]",
+//                    NetUtils.getChannelId(requestWrapper.getCtx().channel()), request.getPacketType());
+//            throw new NameNodeException("未通过认证的请求");
+//        } else {
+
             if (log.isDebugEnabled()) {
                 log.debug("收到一个认证通过的请求：[username={}, token={}, package={}]", userName, userToken,
                         PacketType.getEnum(request.getPacketType()).getDescription());
             }
             return false;
-        }
+
     }
 
     /**
@@ -809,40 +815,48 @@ public class NameNodeApis extends AbstractChannelHandler {
      */
     private void handleReadAttrRequest(RequestWrapper requestWrapper) throws InvalidProtocolBufferException,
             NameNodeException, RequestTimeoutException, InterruptedException {
-        if (isNoAuth(requestWrapper)) {
-            return;
-        }
+//        if (isNoAuth(requestWrapper)) {
+//            return;
+//        }
+        //
         ReadAttrRequest readAttrRequest = ReadAttrRequest.parseFrom(requestWrapper.getRequest().getBody());
+
         String userName = requestWrapper.getRequest().getUserName();
+      //获取文件名
         String realFilename = File.separator + userName + readAttrRequest.getFilename();
-        int nodeId = getNodeId(realFilename);
-        if (this.nodeId == nodeId) {
-            Map<String, String> attr = diskNameSystem.getAttr(realFilename);
+
+//        int nodeId = getNodeId(realFilename);
+//        if (this.nodeId == nodeId) {
+            Map<String, String> attr = diskNameSystem.getAttr(realFilename);//根据文件名获取文件属性
             if (attr == null) {
                 throw new NameNodeException("文件不存在：" + readAttrRequest.getFilename());
             }
             ReadAttrResponse response = ReadAttrResponse.newBuilder()
                     .putAllAttr(attr)
                     .build();
-            requestWrapper.sendResponse(response);
-        } else {
-            forwardRequestToOtherNameNode(nodeId, requestWrapper);
-        }
+            requestWrapper.sendResponse(response);  //获取到的回应
+//        }
+//            else {
+//            forwardRequestToOtherNameNode(nodeId, requestWrapper);
+//        }
     }
 
     /**
      * 处理DataNode注册消息
      */
+
     private void handleDataNodeRegisterRequest(RequestWrapper requestWrapper) throws InvalidProtocolBufferException, NameNodeException {
+        //序列化
         RegisterRequest registerRequest = RegisterRequest.parseFrom(requestWrapper.getRequest().getBody());
-        boolean broadcast = broadcast(requestWrapper.getRequest());
+//        boolean broadcast = broadcast(requestWrapper.getRequest());
+        //注册并返回结果
         boolean result = dataNodeManager.register(registerRequest);
         if (!result) {
             throw new NameNodeException("注册失败，DataNode节点已存在");
         }
-        if (!broadcast) {
-            requestWrapper.sendResponse();
-        }
+//        if (!broadcast) {
+//            requestWrapper.sendResponse();
+//        }
     }
 
     /**
@@ -852,14 +866,18 @@ public class NameNodeApis extends AbstractChannelHandler {
      */
     private void handleDataNodeHeartbeatRequest(RequestWrapper requestWrapper) throws
             InvalidProtocolBufferException, NameNodeException {
+       //序列化
         HeartbeatRequest heartbeatRequest = HeartbeatRequest.parseFrom(requestWrapper.getRequest().getBody());
-
+       //发送心跳并返回结果
         Boolean heartbeat = dataNodeManager.heartbeat(heartbeatRequest.getHostname());
         if (!heartbeat) {
             throw new NameNodeException("心跳失败，DataNode不存在：" + heartbeatRequest.getHostname());
         }
+        //获取datanode信息
         DataNodeInfo dataNode = dataNodeManager.getDataNode(heartbeatRequest.getHostname());
+        //datanode的副本复制任务
         List<ReplicaTask> replicaTask = dataNode.pollReplicaTask(100);
+        //副本命令
         List<ReplicaCommand> replicaCommands = new LinkedList<>();
         if (!replicaTask.isEmpty()) {
             List<ReplicaCommand> commands = replicaTask.stream()
@@ -872,6 +890,7 @@ public class NameNodeApis extends AbstractChannelHandler {
                     .collect(Collectors.toList());
             replicaCommands.addAll(commands);
         }
+        //副本删除任务
         List<RemoveReplicaTask> removeReplicaTasks = dataNode.pollRemoveReplicaTask(100);
         if (!removeReplicaTasks.isEmpty()) {
             List<ReplicaCommand> commands = removeReplicaTasks.stream()
@@ -884,13 +903,13 @@ public class NameNodeApis extends AbstractChannelHandler {
             replicaCommands.addAll(commands);
         }
         // 同步请求其他所有NameNode节点获取他们的响应
-        List<NettyPacket> nettyPackets = broadcastSync(requestWrapper);
+//        List<NettyPacket> nettyPackets = broadcastSync(requestWrapper);
         // 将其他NameNode节点的命令添加到给客户端的响应中
-        for (NettyPacket nettyPacket : nettyPackets) {
-            HeartbeatResponse heartbeatResponse = HeartbeatResponse.parseFrom(nettyPacket.getBody());
-            replicaCommands.addAll(heartbeatResponse.getCommandsList());
-        }
-
+//        for (NettyPacket nettyPacket : nettyPackets) {
+//            HeartbeatResponse heartbeatResponse = HeartbeatResponse.parseFrom(nettyPacket.getBody());
+//            replicaCommands.addAll(heartbeatResponse.getCommandsList());
+//        }
+         //心跳回应
         HeartbeatResponse response = HeartbeatResponse.newBuilder()
                 .addAllCommands(replicaCommands)
                 .build();
@@ -904,18 +923,19 @@ public class NameNodeApis extends AbstractChannelHandler {
      */
     private void handleMkdirRequest(RequestWrapper requestWrapper) throws InvalidProtocolBufferException,
             RequestTimeoutException, InterruptedException, NameNodeException {
-        if (isNoAuth(requestWrapper)) {
-            return;
-        }
+//      if (isNoAuth(requestWrapper)) {
+//            return;
+//        }
+        //
         NettyPacket request = requestWrapper.getRequest();
         MkdirRequest mkdirRequest = MkdirRequest.parseFrom(request.getBody());
+        //获取请求中的真是文件名
         String realFilename = File.separator + request.getUserName() + mkdirRequest.getPath();
+       //查找文件名请求对应nodeID（namenode）
         int nodeId = getNodeId(realFilename);
         if (this.nodeId == nodeId) {
             this.diskNameSystem.mkdir(realFilename, mkdirRequest.getAttrMap());
             requestWrapper.sendResponse();
-        } else {
-            forwardRequestToOtherNameNode(nodeId, requestWrapper);
         }
     }
 
@@ -923,26 +943,31 @@ public class NameNodeApis extends AbstractChannelHandler {
      * 处理BackupNode拉取EditLog
      */
     private void handleFetchEditLogRequest(RequestWrapper requestWrapper) throws InvalidProtocolBufferException {
+       //序列化
         FetchEditsLogRequest fetchEditsLogRequest = FetchEditsLogRequest.parseFrom(requestWrapper.getRequest().getBody());
+
         long txId = fetchEditsLogRequest.getTxId();
         List<EditLogWrapper> result = new ArrayList<>();
         try {
-            result = fetchEditLogBuffer.fetch(txId);
+            result = fetchEditLogBuffer.fetch(txId);//对应id，的editlog序列化对象
         } catch (IOException e) {
             log.error("读取EditLog失败：", e);
         }
+        //建立连接请求
         FetchEditsLogResponse response = FetchEditsLogResponse.newBuilder()
                 .addAllEditLogs(result.stream()
                         .map(EditLogWrapper::getEditLog)
                         .collect(Collectors.toList()))
-                .addAllUsers(userManager.getAllUser().stream()
-                        .map(User::toEntity)
-                        .collect(Collectors.toList()))
+//                .addAllUsers(userManager.getAllUser().stream()
+//                        .map(User::toEntity)
+//                        .collect(Collectors.toList()))
                 .build();
+        //发送请求
         requestWrapper.sendResponse(response);
         if (NameNodeLaunchMode.SINGLE.equals(mode)) {
             return;
         }
+        //资源单位
         if (fetchEditsLogRequest.getNeedSlots() || slotsChanged.get()) {
             if (slotsChanged.compareAndSet(true, false)) {
                 log.info("检测到Slots槽位分配发生了变化，下发给BackupNode最新的槽位信息.");
@@ -971,10 +996,12 @@ public class NameNodeApis extends AbstractChannelHandler {
      */
     private void handleDataNodeReportStorageInfoRequest(RequestWrapper requestWrapper) throws
             InvalidProtocolBufferException {
+        //序列化
         ReportCompleteStorageInfoRequest request =
                 ReportCompleteStorageInfoRequest.parseFrom(requestWrapper.getRequest().getBody());
-        broadcast(requestWrapper.getRequest());
+//        broadcast(requestWrapper.getRequest());
         log.info("全量上报存储信息：[hostname={}, files={}]", request.getHostname(), request.getFileInfosCount());
+        //逐一处理元数据信息
         for (FileMetaInfo file : request.getFileInfosList()) {
             if (getNodeId(file.getFilename()) == this.nodeId) {
                 // 只有属于自己Slot的文件信息才进行保存
@@ -983,10 +1010,10 @@ public class NameNodeApis extends AbstractChannelHandler {
                 fileInfo.setFileName(file.getFilename());
                 fileInfo.setFileSize(file.getFileSize());
                 fileInfo.setHostname(request.getHostname());
-                dataNodeManager.addReplica(fileInfo);
+                dataNodeManager.addReplica(fileInfo); //内存目录不存在的文件，进行删除
             }
         }
-        if (request.getFinished()) {
+        if (request.getFinished()) {//判断请求处理完成
             dataNodeManager.setDataNodeReady(request.getHostname());
             log.info("全量上报存储信息完成：[hostname={}]", request.getHostname());
         }
@@ -996,19 +1023,21 @@ public class NameNodeApis extends AbstractChannelHandler {
      * 处理客户端创建文件请求
      */
     private void handleCreateFileRequest(RequestWrapper requestWrapper) throws Exception {
-        if (isNoAuth(requestWrapper)) {
-            return;
-        }
+//        if (isNoAuth(requestWrapper)) {
+//            return;
+//        }
         NettyPacket request = requestWrapper.getRequest();
         CreateFileRequest createFileRequest = CreateFileRequest.parseFrom(request.getBody());
+        //获取文件名
         String realFilename = File.separator + request.getUserName() + createFileRequest.getFilename();
+        //根据文件名获取nodeId
         int nodeId = getNodeId(realFilename);
-        if (this.nodeId == nodeId) {
-            Map<String, String> attrMap = new HashMap<>(createFileRequest.getAttrMap());
-            String replicaNumStr = attrMap.get(Constants.ATTR_REPLICA_NUM);
-            attrMap.put(Constants.ATTR_FILE_SIZE, String.valueOf(createFileRequest.getFileSize()));
+        if (this.nodeId == nodeId) {//文件在该namenode上
+            Map<String, String> attrMap = new HashMap<>(createFileRequest.getAttrMap()); //获取文件属性
+            String replicaNumStr = attrMap.get(Constants.ATTR_REPLICA_NUM);//文件属性副本数
+            attrMap.put(Constants.ATTR_FILE_SIZE, String.valueOf(createFileRequest.getFileSize()));//文件大小
             int replicaNum;
-            if (replicaNumStr != null) {
+            if (replicaNumStr != null) {//控制副本数量的上下限
                 replicaNum = Integer.parseInt(replicaNumStr);
                 // 最少不能少于配置的数量
                 replicaNum = Math.max(replicaNum, diskNameSystem.getNameNodeConfig().getReplicaNum());
@@ -1018,30 +1047,38 @@ public class NameNodeApis extends AbstractChannelHandler {
                 replicaNum = diskNameSystem.getNameNodeConfig().getReplicaNum();
                 attrMap.put(Constants.ATTR_REPLICA_NUM, String.valueOf(replicaNum));
             }
-            Node node = diskNameSystem.listFiles(realFilename);
+            Node node = diskNameSystem.listFiles(realFilename);//现有目录中查找
             if (node != null) {
                 throw new NameNodeException("文件已存在：" + createFileRequest.getFilename());
             }
+            //目录中不存在该目录名
+            //根据改文件所属的用户 ，为文件分配dataNodes列表
+
             List<DataNodeInfo> dataNodeList = dataNodeManager.allocateDataNodes(request.getUserName(), replicaNum, realFilename);
             Prometheus.incCounter("namenode_put_file_count", "NameNode收到的上传文件请求数量");
             Prometheus.hit("namenode_put_file_qps", "NameNode瞬时上传文件QPS");
+            //file对应dataNode逐一处理
             List<DataNode> dataNodes = dataNodeList.stream()
                     .map(e -> DataNode.newBuilder().setHostname(e.getHostname())
                             .setNioPort(e.getNioPort())
                             .setHttpPort(e.getHttpPort())
                             .build())
                     .collect(Collectors.toList());
+
             diskNameSystem.createFile(realFilename, attrMap);
+
             List<String> collect = dataNodeList.stream().map(DataNodeInfo::getHostname).collect(Collectors.toList());
             log.info("创建文件：[filename={}, datanodes={}]", realFilename, String.join(",", collect));
+            //创建文件回复
             CreateFileResponse response = CreateFileResponse.newBuilder()
                     .addAllDataNodes(dataNodes)
                     .setRealFileName(realFilename)
                     .build();
             requestWrapper.sendResponse(response);
-        } else {
-            forwardRequestToOtherNameNode(nodeId, requestWrapper);
         }
+//        else {
+//            forwardRequestToOtherNameNode(nodeId, requestWrapper);
+//        }
     }
 
     /**
@@ -1049,52 +1086,64 @@ public class NameNodeApis extends AbstractChannelHandler {
      */
     private void handleGetDataNodeForFileRequest(RequestWrapper requestWrapper) throws InvalidProtocolBufferException,
             NameNodeException, RequestTimeoutException, InterruptedException {
-        if (isNoAuth(requestWrapper)) {
-            return;
-        }
+//        if (isNoAuth(requestWrapper)) {
+//            return;
+//        }
+        //序列化
         GetDataNodeForFileRequest getDataNodeForFileRequest = GetDataNodeForFileRequest.parseFrom(requestWrapper.getRequest().getBody());
         String userName = requestWrapper.getRequest().getUserName();
+        //从请求中解析出文件名
         String realFilename = File.separator + userName + getDataNodeForFileRequest.getFilename();
+        //获取所在的namenodeid
         int nodeId = getNodeId(realFilename);
+
         if (this.nodeId == nodeId) {
+            //根据文件名选择一个可读的DataNode，并把不可读的DataNode从文件对应的DataNode数据结构中删除
             DataNodeInfo dataNodeInfo = dataNodeManager.chooseReadableDataNodeByFileName(realFilename);
             if (dataNodeInfo != null) {
                 Prometheus.incCounter("namenode_get_file_count", "NameNode收到的下载文件请求数量");
                 Prometheus.hit("namenode_get_file_qps", "NameNode收到的下载文件请求数量");
+
                 DataNode dataNode = DataNode.newBuilder()
                         .setHostname(dataNodeInfo.getHostname())
                         .setNioPort(dataNodeInfo.getNioPort())
                         .setHttpPort(dataNodeInfo.getHttpPort())
                         .build();
+
                 GetDataNodeForFileResponse response = GetDataNodeForFileResponse.newBuilder()
                         .setDataNode(dataNode)
                         .setRealFileName(realFilename)
                         .build();
+
                 requestWrapper.sendResponse(response);
                 return;
             }
             throw new NameNodeException("文件不存在：" + getDataNodeForFileRequest.getFilename());
-        } else {
-            forwardRequestToOtherNameNode(nodeId, requestWrapper);
         }
+//        else {
+//            forwardRequestToOtherNameNode(nodeId, requestWrapper);
+//        }
     }
 
     /**
      * 处理收到副本请求
      */
     private void handleReplicaReceiveRequest(RequestWrapper requestWrapper) throws InvalidProtocolBufferException {
+        //序列化
         InformReplicaReceivedRequest request = InformReplicaReceivedRequest.parseFrom(requestWrapper.getRequest().getBody());
-        boolean broadcast = broadcast(requestWrapper.getRequest());
+//        boolean broadcast = broadcast(requestWrapper.getRequest());
         log.info("收到增量上报的存储信息：[hostname={}, filename={}]", request.getHostname(), request.getFilename());
+       //解析请求中的文件信息
         FileInfo fileInfo = new FileInfo(request.getHostname(), request.getFilename(), request.getFileSize());
+
         int nodeId = getNodeId(request.getFilename());
         // 只有所属slot的NameNode节点会保存副本的相关信息，但是所有节点都需要维护DataNode节点存储信息。
         if (this.nodeId == nodeId) {
-            dataNodeManager.addReplica(fileInfo);
+            dataNodeManager.addReplica(fileInfo);//通过文件信息增加副本
         }
         DataNodeInfo dataNode = dataNodeManager.getDataNode(request.getHostname());
-        dataNode.addStoredDataSize(request.getFileSize());
-        if (!broadcast) {
+        dataNode.addStoredDataSize(request.getFileSize());//增加存储的信息
+        if (true) {
             requestWrapper.sendResponse();
         }
     }
@@ -1105,19 +1154,20 @@ public class NameNodeApis extends AbstractChannelHandler {
      */
     private void handleRemoveFileRequest(RequestWrapper requestWrapper) throws InvalidProtocolBufferException,
             NameNodeException, RequestTimeoutException, InterruptedException {
-        if (isNoAuth(requestWrapper)) {
-            return;
-        }
+//        if (isNoAuth(requestWrapper)) {
+//            return;
+//        }
+        //请求序列化
         RemoveFileRequest removeFileRequest = RemoveFileRequest.parseFrom(requestWrapper.getRequest().getBody());
         String userName = requestWrapper.getRequest().getUserName();
+        //获取文件名
         String realFilename = File.separator + userName + removeFileRequest.getFilename();
-        int nodeId = getNodeId(realFilename);
-        if (this.nodeId == nodeId) {
-            removeFileInternal(removeFileRequest.getFilename(), userName);
-            requestWrapper.sendResponse();
-        } else {
-            forwardRequestToOtherNameNode(nodeId, requestWrapper);
-        }
+
+//        int nodeId = getNodeId(realFilename);
+//        if (this.nodeId == nodeId) {
+            removeFileInternal(removeFileRequest.getFilename(), userName);//移除文件
+            requestWrapper.sendResponse();//发送回应
+
     }
 
     /**
@@ -1152,26 +1202,26 @@ public class NameNodeApis extends AbstractChannelHandler {
      * @param request 请求
      * @return 该请求是否是别的NameNode广播过来的
      */
-    private boolean broadcast(NettyPacket request) {
-        boolean isBroadcastRequest = request.getBroadcast();
-        if (!isBroadcastRequest) {
-            // 请求是客户端发过来的，并不是别的NameNode广播过来的
-            request.setBroadcast(true);
-            List<Integer> broadcast = peerNameNodes.broadcast(request);
-            if (!broadcast.isEmpty()) {
-                log.debug("广播请求给所有的NameNode: [sequence={}, broadcast={}, packetType={}]",
-                        request.getSequence(), broadcast, PacketType.getEnum(request.getPacketType()).getDescription());
-            }
-        }
-        return isBroadcastRequest;
-    }
+//    private boolean broadcast(NettyPacket request) {
+//        boolean isBroadcastRequest = request.getBroadcast();
+//        if (!isBroadcastRequest) {
+//            // 请求是客户端发过来的，并不是别的NameNode广播过来的
+//            request.setBroadcast(true);
+//            List<Integer> broadcast = peerNameNodes.broadcast(request);
+//            if (!broadcast.isEmpty()) {
+//                log.debug("广播请求给所有的NameNode: [sequence={}, broadcast={}, packetType={}]",
+//                        request.getSequence(), broadcast, PacketType.getEnum(request.getPacketType()).getDescription());
+//            }
+//        }
+//        return isBroadcastRequest;
+//    }
 
     /**
      * 广播请求给所有的NameNode节点, 同时获取所有节点的响应
      *
      * @param requestWrapper 请求
      * @return 请求结果
-     */
+//     */
     private List<NettyPacket> broadcastSync(RequestWrapper requestWrapper) {
         NettyPacket request = requestWrapper.getRequest();
         boolean isBroadcastRequest = request.getBroadcast();
@@ -1180,15 +1230,15 @@ public class NameNodeApis extends AbstractChannelHandler {
             request.setBroadcast(true);
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
-            List<NettyPacket> nettyPackets = new ArrayList<>(peerNameNodes.broadcastSync(request));
+//            List<NettyPacket> nettyPackets = new ArrayList<>(peerNameNodes.broadcastSync(request));
             stopWatch.stop();
-            if (!nettyPackets.isEmpty()) {
-                log.debug("同步发送请求给所有的NameNode，并获取到了响应: [sequence={}, broadcast={}, packetType={}, cost={} s]",
-                        request.getSequence(), peerNameNodes.getAllNodeId(),
-                        PacketType.getEnum(request.getPacketType()).getDescription(),
-                        stopWatch.getTime() / 1000.0D);
-            }
-            return nettyPackets;
+//            if (!nettyPackets.isEmpty()) {
+//                log.debug("同步发送请求给所有的NameNode，并获取到了响应: [sequence={}, broadcast={}, packetType={}, cost={} s]",
+//                        request.getSequence(), peerNameNodes.getAllNodeId(),
+//                        PacketType.getEnum(request.getPacketType()).getDescription(),
+//                        stopWatch.getTime() / 1000.0D);
+//            }
+//            return nettyPackets;
         }
         return new ArrayList<>();
     }
@@ -1219,13 +1269,13 @@ public class NameNodeApis extends AbstractChannelHandler {
     /**
      * 转发请求到其他NameNode
      */
-    private void forwardRequestToOtherNameNode(int nodeId, RequestWrapper requestWrapper) throws
-            InterruptedException, RequestTimeoutException {
-        NettyPacket request = requestWrapper.getRequest();
-        log.debug("转发请求到别的NameNode: [targetNodeId={}, sequence={}, packetType={}]", nodeId,
-                request.getSequence(), PacketType.getEnum(request.getPacketType()).getDescription());
-        String sequence = request.getSequence();
-        NettyPacket response = peerNameNodes.sendSync(nodeId, request);
-        requestWrapper.sendResponse(response, sequence);
-    }
+//    private void forwardRequestToOtherNameNode(int nodeId, RequestWrapper requestWrapper) throws
+//            InterruptedException, RequestTimeoutException {
+//        NettyPacket request = requestWrapper.getRequest();
+//        log.debug("转发请求到别的NameNode: [targetNodeId={}, sequence={}, packetType={}]", nodeId,
+//                request.getSequence(), PacketType.getEnum(request.getPacketType()).getDescription());
+//        String sequence = request.getSequence();
+//        NettyPacket response = peerNameNodes.sendSync(nodeId, request);
+//        requestWrapper.sendResponse(response, sequence);
+//    }
 }

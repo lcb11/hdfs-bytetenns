@@ -290,22 +290,22 @@ public class DataNodeManager {
      * @param count    申请机器数量
      *                 为文件分配dataNode机器列表
      */
-   /* public List<DataNodeInfo> allocateDataNodes(String username, int count, String filename) throws Exception {
+    public List<DataNodeInfo> allocateDataNodes(String username, int count, String filename) throws Exception {
         //User user = userManager.getUser(username);
-        Set<String> dataNodeSet = user.getStorageInfo().getDataNodesSet();
-        if (dataNodeSet.isEmpty()) {
+//        Set<String> dataNodeSet = user.getStorageInfo().getDataNodesSet();
+//        if (dataNodeSet.isEmpty()) {
             List<DataNodeInfo> sortedReadyDataNode = getSortedReadyDataNode();
             return selectDataNodeFromList(sortedReadyDataNode, count, filename);
-        } else {
-            // 这里用户是指定了DataNode的，则在指定的DataNode中查找对应的DataNode
-            List<DataNodeInfo> dataNodeInfos = dataNodes.values().stream()
-                    .filter(dataNodeInfo -> dataNodeInfo.getStatus() == DataNodeInfo.STATUS_READY
-                            && dataNodeSet.contains(dataNodeInfo.getHostname()))
-                    .sorted()
-                    .collect(Collectors.toList());
-            return selectDataNodeFromList(dataNodeInfos, count, filename);
-        }
-    }*/
+//        } else {
+//            // 这里用户是指定了DataNode的，则在指定的DataNode中查找对应的DataNode
+//            List<DataNodeInfo> dataNodeInfos = dataNodes.values().stream()
+//                    .filter(dataNodeInfo -> dataNodeInfo.getStatus() == DataNodeInfo.STATUS_READY
+//                            && dataNodeSet.contains(dataNodeInfo.getHostname()))
+//                    .sorted()
+//                    .collect(Collectors.toList());
+//            return selectDataNodeFromList(dataNodeInfos, count, filename);
+//        }
+    }
 
     /**
      * 从内存数据结构中移除DataNode的文件列表并返回
@@ -534,6 +534,7 @@ public class DataNodeManager {
             }
         }
     }
+
 
     /**
      * 为某个文件增加副本数量
