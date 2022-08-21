@@ -1,6 +1,6 @@
 package com.bytetenns.metrics;
 
-import com.bytetenns.utils.NetUtils;
+import com.bytetenns.common.utils.NetUtils;
 import io.prometheus.client.*;
 import io.prometheus.client.hotspot.DefaultExports;
 import lombok.extern.slf4j.Slf4j;
