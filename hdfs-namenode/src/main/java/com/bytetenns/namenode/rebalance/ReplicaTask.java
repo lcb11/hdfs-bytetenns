@@ -16,8 +16,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReplicaTask {
 
+    //文件名字
     private String filename;
+    //datanode名字
     private String hostname;
+    //通信端口号
     private int port;
 
 }

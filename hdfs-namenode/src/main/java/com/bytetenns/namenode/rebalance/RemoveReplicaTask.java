@@ -16,7 +16,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RemoveReplicaTask {
 
+    //datanode名字
     private String hostname;
+    //文件名字
     private String fileName;
 }
 

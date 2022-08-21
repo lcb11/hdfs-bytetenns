@@ -45,6 +45,7 @@ public class EditLogBuffer {
             startTxid = editLog.getTxId();
         }
         endTxid = editLog.getTxId();
+        //将editLog转化为byte再写入bytebuffer中
         buffer.write(editLog.toByteArray());
     }
 
