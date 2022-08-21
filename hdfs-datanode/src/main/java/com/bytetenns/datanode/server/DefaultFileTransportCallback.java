@@ -1,7 +1,7 @@
 package com.bytetenns.datanode.server;
 
 // import com.ruyuan.dfs.common.metrics.Prometheus;
-import com.bytetenns.datanode.network.file.FileAttribute;
+import com.bytetenns.network.file.FileAttribute;
 import com.bytetenns.datanode.namenode.NameNodeClient;
 import com.bytetenns.datanode.storage.StorageManager;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +40,8 @@ public class DefaultFileTransportCallback {
      * 文件传输完成后触发，记录收到一个副本
      */
     public void onCompleted(FileAttribute fileAttribute) throws InterruptedException, IOException {
-        storageManager.recordReplicaReceive(fileAttribute.getFilename(), fileAttribute.getAbsolutePath(), fileAttribute.getSize());
+        storageManager.recordReplicaReceive(fileAttribute.getFilename(), fileAttribute.getAbsolutePath(),
+                fileAttribute.getSize());
         nameNodeClient.informReplicaReceived(fileAttribute.getFilename(), fileAttribute.getSize());
     }
     /*
@@ -48,6 +49,7 @@ public class DefaultFileTransportCallback {
      */
 
     public void onProgress(String filename, long total, long current, float progress, int currentWriteBytes) {
-        Prometheus.hit("datanode_disk_write_bytes", "DataNode瞬时写磁盘大小", currentWriteBytes);
+        // Prometheus.hit("datanode_disk_write_bytes", "DataNode瞬时写磁盘大小",
+        // currentWriteBytes);
     }
 }
