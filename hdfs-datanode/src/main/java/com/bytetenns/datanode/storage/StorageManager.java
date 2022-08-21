@@ -2,8 +2,8 @@ package com.bytetenns.datanode.storage;
 
 
 import com.bytetenns.datanode.file.FileInfo;
-import com.bytetenns.utils.FileUtil;
-import com.bytetenns.utils.StringUtils;
+import com.bytetenns.common.utils.FileUtil;
+import com.bytetenns.common.utils.StringUtils;
 import com.bytetenns.datanode.conf.DataNodeConfig;
 import com.bytetenns.datanode.file.locate.FileLocator;
 import com.bytetenns.datanode.file.locate.FileLocatorFactory;
