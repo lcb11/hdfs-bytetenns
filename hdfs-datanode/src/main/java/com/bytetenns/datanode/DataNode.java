@@ -5,7 +5,7 @@ import com.bytetenns.datanode.replica.PeerDataNodes;
 import com.bytetenns.datanode.server.DataNodeServer;
 import com.bytetenns.datanode.storage.StorageManager;
 // import com.ruyuan.dfs.common.metrics.Prometheus;
-import com.bytetenns.datanode.utils.DefaultScheduler;
+import com.bytetenns.scheduler.DefaultScheduler;
 import com.bytetenns.datanode.conf.DataNodeConfig;
 import com.bytetenns.datanode.server.DefaultFileTransportCallback;
 import com.bytetenns.datanode.server.DataNodeApis;

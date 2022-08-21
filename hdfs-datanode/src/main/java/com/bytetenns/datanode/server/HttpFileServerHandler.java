@@ -1,7 +1,6 @@
 package com.bytetenns.datanode.server;
 
-
-import com.ruyuan.dfs.common.metrics.MetricsHandler;
+// import com.bytetenns.datanode.metrics.MetricsHandler;
 // import com.ruyuan.dfs.common.metrics.Prometheus;
 import com.bytetenns.datanode.storage.StorageManager;
 import io.netty.buffer.Unpooled;
@@ -20,17 +19,17 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 /**
  * 用于HTTP下载文件的Netty服务端
  *
- * @author Sun Dasheng
+ * @author gongwei
  */
 @Slf4j
 public class HttpFileServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
     private StorageManager storageManager;
-    private MetricsHandler metricsHandler;
+    // private MetricsHandler metricsHandler;
 
     public HttpFileServerHandler(StorageManager storageManager) {
         this.storageManager = storageManager;
-        this.metricsHandler = new MetricsHandler();
+        // this.metricsHandler = new MetricsHandler();
     }
 
     /*
@@ -39,12 +38,12 @@ public class HttpFileServerHandler extends SimpleChannelInboundHandler<FullHttpR
     @Override
     public void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
         String filename = URLDecoder.decode(request.uri(), "UTF-8");
-        if (metricsHandler.sendMetrics(ctx, request)) {
-            return;
-        }
+        // if (metricsHandler.sendMetrics(ctx, request)) {
+        // return;
+        // }
         if (request.method().equals(HttpMethod.GET)) {
             log.debug("收到文件下载请求：[filename={}]", filename);
-            Prometheus.incCounter("datanode_http_get_file_count", "DataNode收到的下载文件请求数量");
+            // Prometheus.incCounter("datanode_http_get_file_count", "DataNode收到的下载文件请求数量");
             String absolutePath = storageManager.getAbsolutePathByFileName(filename);
             String name = filename.substring(filename.lastIndexOf("/") + 1);
             File file = new File(absolutePath);
@@ -89,10 +88,11 @@ public class HttpFileServerHandler extends SimpleChannelInboundHandler<FullHttpR
                         if (total < 0) {
                             log.warn("file transfer progress: [filename={}, progress={}]", file.getName(), progress);
                         } else {
-                            int deltaProgress = (int) (progress - lastProgress);
-                            lastProgress = progress;
-                            Prometheus.hit("datanode_disk_read_bytes", "DataNode瞬时写磁盘大小", deltaProgress);
-                            log.debug("file transfer progress: [filename={}, progress={}]", file.getName(), progress / total);
+                            // int deltaProgress = (int) (progress - lastProgress);
+                            // lastProgress = progress;
+                            // Prometheus.hit("datanode_disk_read_bytes", "DataNode瞬时写磁盘大小", deltaProgress);
+                            log.debug("file transfer progress: [filename={}, progress={}]", file.getName(),
+                                    progress / total);
                         }
                     }
                 });
@@ -112,9 +112,8 @@ public class HttpFileServerHandler extends SimpleChannelInboundHandler<FullHttpR
     private static void sendError(ChannelHandlerContext ctx, HttpResponseStatus status, String msg) {
         FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,
                 status, Unpooled.copiedBuffer("Failure: " + status.toString()
-                + "\r\n" + msg, CharsetUtil.UTF_8));
+                        + "\r\n" + msg, CharsetUtil.UTF_8));
         response.headers().set("Content-Type", "text/plain; charset=UTF-8");
         ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
     }
 }
-
