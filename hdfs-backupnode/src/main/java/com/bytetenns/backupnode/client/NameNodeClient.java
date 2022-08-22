@@ -5,16 +5,17 @@ import com.bytetenns.backupnode.filesystem.InMemoryNameSystem;
 import com.bytetenns.backupnode.fsimage.EditsLogFetcher;
 import com.bytetenns.backupnode.fsimage.FsImageCheckPointer;
 import com.bytetenns.backupnode.ha.NodeRoleSwitcher;
+import com.bytetenns.backupnode.server.User;
 import com.bytetenns.dfs.model.backup.*;
 import com.bytetenns.common.enums.PacketType;
 import com.bytetenns.common.exception.RequestTimeoutException;
+import com.bytetenns.dfs.model.namenode.UserEntity;
 import com.bytetenns.namenode.NameNodeConfig;
 import com.bytetenns.common.netty.NettyPacket;
 import com.bytetenns.common.network.NetClient;
 import com.bytetenns.common.scheduler.DefaultScheduler;
 import com.google.protobuf.InvalidProtocolBufferException;
 import lombok.extern.slf4j.Slf4j;
-
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;

@@ -8,8 +8,8 @@ import com.bytetenns.datanode.conf.DataNodeConfig;
 import com.bytetenns.datanode.namenode.NameNodeClient;
 import com.bytetenns.datanode.server.DataNodeServer;
 import com.bytetenns.datanode.server.DataNodeApis;
-import com.bytetenns.datanode.model.common.GetFileRequest;
-import com.bytetenns.datanode.model.datanode.PeerNodeAwareRequest;
+import com.bytetenns.dfs.model.common.GetFileRequest;
+import com.bytetenns.dfs.model.datanode.PeerNodeAwareRequest;
 import io.netty.channel.socket.SocketChannel;
 import lombok.extern.slf4j.Slf4j;
 

@@ -13,7 +13,7 @@ import com.bytetenns.common.scheduler.DefaultScheduler;
 import com.bytetenns.datanode.conf.DataNodeConfig;
 import com.bytetenns.datanode.namenode.NameNodeClient;
 import com.bytetenns.datanode.replica.PeerDataNodes;
-import com.bytetenns.dfs.model.GetFileRequest;
+import com.bytetenns.dfs.model.common.GetFileRequest;
 import com.bytetenns.dfs.model.datanode.PeerNodeAwareRequest;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;

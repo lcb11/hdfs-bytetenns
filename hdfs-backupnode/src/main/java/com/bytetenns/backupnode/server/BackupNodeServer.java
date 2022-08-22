@@ -2,6 +2,7 @@ package com.bytetenns.backupnode.server;
 
 import com.bytetenns.backupnode.config.BackupNodeConfig;
 import com.bytetenns.common.network.NetServer;
+import com.bytetenns.common.scheduler.DefaultScheduler;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
@@ -19,7 +20,8 @@ public class BackupNodeServer {
 
     private NetServer netServer;
 
-    public BackupNodeServer(BackupNodeConfig backupNodeConfig) {
+    public BackupNodeServer(DefaultScheduler defaultScheduler, BackupNodeConfig backupNodeConfig) {
+        this.netServer = new NetServer("BackupNode-Server", defaultScheduler);
         this.backupNodeConfig = backupNodeConfig;
     }
 

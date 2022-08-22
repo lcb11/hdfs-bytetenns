@@ -122,6 +122,9 @@ message FetchDataNodeByFilenameRequest {
     string filename = 1;
 }
 
+message FetchDataNodeByFilenameResponse {
+    repeated DataNode datanodes = 1;
+}
 
 message AddReplicaNumRequest {
     string filename = 1;
@@ -146,6 +149,3 @@ message ClientDataNode {
     int32 status = 5;
 }
 
-message FetchDataNodeByFilenameResponse {
-    repeated DataNode datanodes = 1;
-}

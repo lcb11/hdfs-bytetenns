@@ -1,9 +1,11 @@
 package com.bytetenns.backupnode.filesystem;
 
 import com.bytetenns.backupnode.config.BackupNodeConfig;
-import com.bytetenns.backupnode.fsimage.FsImage;
+import com.bytetenns.dfs.model.namenode.Metadata;
+import com.bytetenns.namenode.fs.AbstractFsNameSystem;
+import com.bytetenns.namenode.fs.FsImage;
 import lombok.extern.slf4j.Slf4j;
-
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -12,7 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @Date 2022/8/17
  */
 @Slf4j
-public class InMemoryNameSystem extends FsNameSystem{
+public class InMemoryNameSystem extends AbstractFsNameSystem {
 
     // 引入BN配置文件
     private BackupNodeConfig backupNodeConfig;
@@ -85,4 +87,8 @@ public class InMemoryNameSystem extends FsNameSystem{
         return recovering.get();
     }
 
+    @Override
+    public Set<Metadata> getFilesBySlot(int slot) {
+        return null;
+    }
 }

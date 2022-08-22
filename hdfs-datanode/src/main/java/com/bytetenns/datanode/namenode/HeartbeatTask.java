@@ -1,7 +1,7 @@
 package com.bytetenns.datanode.namenode;
 
-import com.bytetenns.netty.NettyPacket;
-import com.bytetenns.enums.PacketType;
+import com.bytetenns.common.netty.NettyPacket;
+import com.bytetenns.common.enums.PacketType;
 import com.bytetenns.datanode.conf.DataNodeConfig;
 import com.bytetenns.dfs.model.datanode.HeartbeatRequest;
 import io.netty.channel.ChannelHandlerContext;

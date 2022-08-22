@@ -3,6 +3,7 @@ package com.bytetenns.backupnode;
 import com.bytetenns.backupnode.client.NameNodeClient;
 import com.bytetenns.backupnode.config.BackupNodeConfig;
 import com.bytetenns.backupnode.filesystem.InMemoryNameSystem;
+import com.bytetenns.backupnode.ha.NodeRoleSwitcher;
 import com.bytetenns.backupnode.server.BackupNodeServer;
 import com.bytetenns.common.scheduler.DefaultScheduler;
 import lombok.extern.slf4j.Slf4j;
@@ -39,10 +40,15 @@ public class BackupNode {
         try {
             // 2.1 初始化backupNode启动类
             BackupNode backupNode = new BackupNode(backupNodeConfig);
-            // 2.2 shutdown关闭
-            Runtime.getRuntime().addShutdownHook(new Thread(backupNode::shutdown));
-            // 2.3 start启动
+
+            NodeRoleSwitcher.getInstance().setBackupNode(backupNode);  //BN升级为NN
+
+            // 2.2 start启动
             backupNode.start();
+
+            // 2.3 shutdown关闭
+            Runtime.getRuntime().addShutdownHook(new Thread(backupNode::shutdown));
+
         } catch (Exception e) {
             log.error("BackupNode启动失败：", e);
             System.exit(1); //启动失败
@@ -57,14 +63,14 @@ public class BackupNode {
         this.defaultScheduler = new DefaultScheduler("BackupNode-Scheduler-");
         this.nameSystem = new InMemoryNameSystem(backupNodeConfig);
         this.nameNodeClient = new NameNodeClient(defaultScheduler,backupNodeConfig, nameSystem);
-        this.backupNodeServer = new BackupNodeServer(backupNodeConfig);
+        this.backupNodeServer = new BackupNodeServer(defaultScheduler,backupNodeConfig);
     }
 
     /**
      * 启动BackupNode
      * @throws Exception
      */
-    private void start() throws Exception {
+    public void start() throws Exception {
         if (started.compareAndSet(false, true)) {
             this.nameSystem.recoveryNamespace();
             this.nameNodeClient.start();

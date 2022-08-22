@@ -1,8 +1,9 @@
 package com.bytetenns.backupnode.fsimage;
 
-import com.bytetenns.backupnode.filesystem.FsNameSystem;
+import com.bytetenns.backupnode.filesystem.InMemoryNameSystem;
 import com.bytetenns.common.utils.FileUtil;
 import com.bytetenns.namenode.editlog.FsEditLog;
+import com.bytetenns.namenode.fs.AbstractFsNameSystem;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import java.io.FileInputStream;
@@ -21,14 +22,14 @@ import java.util.Map;
 public class FsImageClearTask implements Runnable {
 
     private String baseDir;
-    private FsNameSystem nameSystem;
+    private AbstractFsNameSystem nameSystem;
     private FsEditLog fsEditLog;
 
-    public FsImageClearTask(FsNameSystem nameSystem, String baseDir) {
+    public FsImageClearTask(InMemoryNameSystem nameSystem, String baseDir) {
         this(nameSystem, baseDir, null);
     }
 
-    public FsImageClearTask(FsNameSystem nameSystem, String baseDir, FsEditLog fsEditLog) {
+    public FsImageClearTask(AbstractFsNameSystem nameSystem, String baseDir, FsEditLog fsEditLog) {
         this.nameSystem = nameSystem;
         this.baseDir = baseDir;
         this.fsEditLog = fsEditLog;

@@ -6,7 +6,7 @@ import com.bytetenns.common.scheduler.DefaultScheduler;
 import com.bytetenns.common.utils.FileUtil;
 import com.bytetenns.datanode.namenode.NameNodeClient;
 import com.bytetenns.datanode.storage.StorageManager;
-import com.bytetenfs.dfs.model.datanode.ReplicaCommand;
+import com.bytetenns.dfs.model.datanode.ReplicaCommand;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
