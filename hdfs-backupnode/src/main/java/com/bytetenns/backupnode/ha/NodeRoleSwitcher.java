@@ -2,7 +2,7 @@ package com.bytetenns.backupnode.ha;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bytetenns.backupnode.BackupNode;
-import com.bytetenns.backupnode.fsimage.FsImage;
+import com.bytetenns.backupnode.server.User;
 import com.bytetenns.common.enums.NameNodeLaunchMode;
 import com.bytetenns.common.enums.PacketType;
 import com.bytetenns.common.netty.Constants;
@@ -12,6 +12,7 @@ import com.bytetenns.common.utils.NetUtils;
 import com.bytetenns.dfs.model.namenode.NameNodeSlots;
 import com.bytetenns.namenode.NameNode;
 import com.bytetenns.namenode.NameNodeConfig;
+import com.bytetenns.namenode.fs.FsImage;
 import io.netty.channel.Channel;
 import io.netty.channel.socket.SocketChannel;
 import lombok.extern.slf4j.Slf4j;

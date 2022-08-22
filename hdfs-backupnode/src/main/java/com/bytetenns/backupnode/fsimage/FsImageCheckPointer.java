@@ -60,7 +60,7 @@ public class FsImageCheckPointer implements Runnable {
                 log.info("EditLog和上次没有变化，不进行checkpoint: [txId={}]", lastCheckpointTxId);
                 return;
             }
-            FsImage fsImage = nameSystem.getFsImage();
+            com.bytetenns.namenode.fs.FsImage fsImage = nameSystem.getFsImage();
             lastCheckpointTxId = fsImage.getMaxTxId();
             String fsImageFile = backupNodeConfig.getFsImageFile(String.valueOf(System.currentTimeMillis()));
 
@@ -95,7 +95,7 @@ public class FsImageCheckPointer implements Runnable {
     /**
      * 写入fsImage文件
      */
-    private void doCheckpoint(FsImage fsImage, String path) throws Exception {
+    private void doCheckpoint(com.bytetenns.namenode.fs.FsImage fsImage, String path) throws Exception {
         ByteBuffer buffer = ByteBuffer.wrap(fsImage.toByteArray());
         FileUtil.saveFile(path, true, buffer);
         log.info("保存FsImage文件：[file={}]", path);
