@@ -3,7 +3,7 @@ package com.bytetenns.client.tools.command;
 import com.bytetenns.client.FileSystem;
 import com.bytetenns.client.FsFile;
 import com.bytetenns.client.utils.ConsoleTable;
-import com.bytetenns.enums.NodeType;
+import com.bytetenns.common.enums.NodeType;
 import org.jline.reader.LineReader;
 
 import java.util.ArrayList;

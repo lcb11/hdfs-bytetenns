@@ -12,10 +12,10 @@ import java.util.concurrent.CountDownLatch;
 import com.bytetenns.client.FileSystem;
 import com.bytetenns.client.utils.ConsoleTable;
 import com.bytetenns.client.utils.ProgressBar;
-import com.bytetenns.network.file.OnProgressListener;
-import com.bytetenns.utils.FileUtil;
-import com.bytetenns.utils.PrettyCodes;
-import com.bytetenns.utils.StringUtils;
+import com.bytetenns.common.network.file.OnProgressListener;
+import com.bytetenns.common.utils.FileUtil;
+import com.bytetenns.common.utils.PrettyCodes;
+import com.bytetenns.common.utils.StringUtils;
 
 /**
  * 抽象命令
