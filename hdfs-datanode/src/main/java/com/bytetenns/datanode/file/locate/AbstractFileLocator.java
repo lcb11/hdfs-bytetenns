@@ -1,7 +1,7 @@
 package com.bytetenns.datanode.file.locate;
 
-import com.bytetenns.datanode.utils.NetUtils;
-import com.bytetenns.datanode.utils.StringUtils;
+import com.bytetenns.common.utils.NetUtils;
+import com.bytetenns.common.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;

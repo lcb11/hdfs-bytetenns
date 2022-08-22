@@ -14,8 +14,8 @@ import com.bytetenns.datanode.replica.PeerDataNodes;
 import com.bytetenns.datanode.replica.ReplicateManager;
 import com.bytetenns.datanode.storage.StorageInfo;
 import com.bytetenns.datanode.storage.StorageManager;
-import com.bytetenns.model.backup.BackupNodeInfo;
-import com.bytetenns.model.datanode.*;
+// import com.bytetenns.model.backup.BackupNodeInfo;
+import com.bytetenns.dfs.model.datanode.*;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.ScheduledFuture;
 import lombok.extern.slf4j.Slf4j;
@@ -68,10 +68,10 @@ public class NameNodeClient {
         }
       }
     });
-    this.netClient.addNetClientFailListener(() -> {
-      log.info("DataNode检测到NameNode挂了，标记NameNode已宕机");
-      backupNodeManager.markNameNodeDown();
-    });
+    // this.netClient.addNetClientFailListener(() -> {
+    //   log.info("DataNode检测到NameNode挂了，标记NameNode已宕机");
+    //   backupNodeManager.markNameNodeDown();
+    // });
     this.netClient.connect(datanodeConfig.getNameNodeAddr(), datanodeConfig.getNameNodePort());
   }
 
