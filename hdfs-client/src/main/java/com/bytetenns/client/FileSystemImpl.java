@@ -108,13 +108,16 @@ public class FileSystemImpl implements FileSystem {
         }
     }
 
-    // 此处做了较大改动
+    /**
+     * 处理收到的BackupNodeInfo包，
+     */
     private void handleFetchBackupNodeInfoResponse(RequestWrapper requestWrapper) throws InvalidProtocolBufferException {
         if (requestWrapper.getRequest().getBody().length == 0) {
             log.warn("拉取BackupNode信息为空，设置NetClient为无限重试.");
             netClient.setRetryTime(-1);
             return;
         }
+        // 如果支持BackupNode，则设置在NameNode断开的情况下重连3次BackupNode，让BackupNode替代NameNode的作用
         netClient.setRetryTime(3);
         BackupNodeInfo backupNodeInfo = BackupNodeInfo.parseFrom(requestWrapper.getRequest().getBody());
         backupNodeManager.maybeEstablishConnect(backupNodeInfo, hostname -> {
@@ -173,24 +176,29 @@ public class FileSystemImpl implements FileSystem {
      */
     @Override
     public void put(String filename, File file,  Map<String, String> attr, OnProgressListener listener) throws Exception {
+        log.info("进入put()上传文件方法");
         validate(filename);
         for (String key : Constants.KEYS_ATTR_SET) {
             if (attr.containsKey(key)) {
                 log.warn("文件属性包含关键属性：[key={}]", key);
             }
         }
+        log.info("开始构造创建文件请求包");
         CreateFileRequest request = CreateFileRequest.newBuilder()
                 .setFilename(filename)
                 .setFileSize(file.length())
                 .putAllAttr(attr)
                 .build();
         NettyPacket nettyPacket = NettyPacket.buildPacket(request.toByteArray(), PacketType.CREATE_FILE);
+        log.info("同步向NameNode发送创建文件请求包");
         NettyPacket resp = safeSendSync(nettyPacket);
         CreateFileResponse response = CreateFileResponse.parseFrom(resp.getBody());
+        log.debug("dataNodes = {}", response.getDataNodesList());
         for (int i = 0; i < response.getDataNodesList().size(); i++) {
             DataNode dataNodes = response.getDataNodes(i);
             String hostname = dataNodes.getHostname();
             int port = dataNodes.getNioPort();
+            log.debug("datanode-server, hostname = {}, port = {}", hostname, port);
             NetClient netClient = new NetClient("FSClient-DataNode-" + hostname, defaultScheduler);
             FileTransportClient fileTransportClient = new FileTransportClient(netClient);
             netClient.connect(hostname, port);
@@ -355,10 +363,6 @@ public class FileSystemImpl implements FileSystem {
      */
     private NettyPacket safeSendSync(NettyPacket nettyPacket) throws DfsClientException,
             InterruptedException, RequestTimeoutException {
-        nettyPacket.setUsername(fsClientConfig.getUsername());
-        if (fsClientConfig.getUserToken() != null) {
-            nettyPacket.setUserToken(fsClientConfig.getUserToken());
-        }
         NettyPacket resp = netClient.sendSync(nettyPacket);
         if (resp.isError()) {
             throw new DfsClientException(resp.getError());
@@ -368,21 +372,13 @@ public class FileSystemImpl implements FileSystem {
 
     /**
      * 验证文件名称合法,校验连接已经认证通过
-     *
+     * @author LiZhirun
      * @param filename 文件名称
      */
     private void validate(String filename) throws Exception {
         boolean ret = StringUtils.validateFileName(filename);
         if (!ret) {
             throw new DfsClientException("不合法的文件名：" + filename);
-        }
-        while (authStatus == AUTH_INIT) {
-            synchronized (this) {
-                wait(10);
-            }
-        }
-        if (authStatus != AUTH_SUCCESS) {
-            throw new DfsClientException("未通过认证，不能发送请求");
         }
     }
 }
