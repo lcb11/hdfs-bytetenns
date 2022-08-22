@@ -9,6 +9,7 @@ import "namenode.proto";
 
 message FetchEditsLogResponse {
   repeated EditLog editLogs = 1;
+  repeated UserEntity users = 2;
 }
 
 message FetchEditsLogRequest {
