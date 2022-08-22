@@ -46,6 +46,11 @@ public class FileSystemTest {
         FileSystem fileSystem = getFileSystem();
         fileSystem.mkdir("/usr/local/kafka");
     }
+    public static void main(String[] args) throws Exception {
+        FileSystemTest test = new FileSystemTest();
+        FileSystem fileSystem = test.getFileSystem();
+        test.putFile(fileSystem);
+    }
 
     @Test
     public void testPut() throws Exception {
