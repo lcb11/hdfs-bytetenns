@@ -6,17 +6,17 @@ import com.bytetenns.client.exception.DfsClientException;
 import com.bytetenns.client.tools.CommandLineListener;
 import com.bytetenns.client.tools.OnMultiFileProgressListener;
 import com.bytetenns.Constants;
-import com.bytetenns.enums.PacketType;
-import com.bytetenns.exception.RequestTimeoutException;
+import com.bytetenns.common.enums.PacketType;
+import com.bytetenns.common.exception.RequestTimeoutException;
 import com.bytetenns.ha.BackupNodeManager;
-import com.bytetenns.netty.NettyPacket;
-import com.bytetenns.network.NetClient;
-import com.bytetenns.network.RequestWrapper;
-import com.bytetenns.network.file.FileTransportClient;
-import com.bytetenns.network.file.OnProgressListener;
-import com.bytetenns.scheduler.DefaultScheduler;
-import com.bytetenns.utils.PrettyCodes;
-import com.bytetenns.utils.StringUtils;
+import com.bytetenns.common.netty.NettyPacket;
+import com.bytetenns.common.network.NetClient;
+import com.bytetenns.common.network.RequestWrapper;
+import com.bytetenns.common.network.file.FileTransportClient;
+import com.bytetenns.common.network.file.OnProgressListener;
+import com.bytetenns.common.scheduler.DefaultScheduler;
+import com.bytetenns.common.utils.PrettyCodes;
+import com.bytetenns.common.utils.StringUtils;
 import com.bytetenns.dfs.model.backup.BackupNodeInfo;
 import com.bytetenns.dfs.model.backup.INode;
 import com.bytetenns.dfs.model.client.*;
@@ -187,8 +187,6 @@ public class FileSystemImpl implements FileSystem {
         NettyPacket nettyPacket = NettyPacket.buildPacket(request.toByteArray(), PacketType.CREATE_FILE);
         NettyPacket resp = safeSendSync(nettyPacket);
         CreateFileResponse response = CreateFileResponse.parseFrom(resp.getBody());
-        OnMultiFileProgressListener onMultiFileProgressListener =
-                new OnMultiFileProgressListener(listener, response.getDataNodesList().size());
         for (int i = 0; i < response.getDataNodesList().size(); i++) {
             DataNode dataNodes = response.getDataNodes(i);
             String hostname = dataNodes.getHostname();
@@ -200,7 +198,7 @@ public class FileSystemImpl implements FileSystem {
             if (log.isDebugEnabled()) {
                 log.debug("开始上传文件到：[node={}:{}, filename={}]", hostname, port, filename);
             }
-            fileTransportClient.sendFile(response.getRealFileName(), file.getAbsolutePath(), onMultiFileProgressListener, true);
+            fileTransportClient.sendFile(response.getRealFileName(), file.getAbsolutePath(), null, true);
             fileTransportClient.shutdown();
             if (log.isDebugEnabled()) {
                 log.debug("完成上传文件到：[node={}:{}, filename={}]", hostname, port, filename);
