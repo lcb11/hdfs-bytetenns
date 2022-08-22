@@ -23,6 +23,7 @@ public class SyncRequestSupport {
 
     public SyncRequestSupport(String name, DefaultScheduler defaultScheduler, long requestTimeout) {
         this.name = name;
+        // 每一秒钟检查一下正在进行的同步发送任务，并进行标记
         defaultScheduler.schedule("定时检测超时", () -> checkRequestTimeout(requestTimeout),
                 0, 1000, TimeUnit.MILLISECONDS);
     }
