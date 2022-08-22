@@ -1,6 +1,6 @@
 package com.bytetenns.client.tools;
 
-import com.bytetenns.network.file.OnProgressListener;
+import com.bytetenns.common.network.file.OnProgressListener;
 
 /**
  * 多文件传输进度监听器

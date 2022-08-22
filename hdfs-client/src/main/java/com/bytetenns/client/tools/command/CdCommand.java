@@ -2,7 +2,7 @@ package com.bytetenns.client.tools.command;
 
 import com.bytetenns.client.FileSystem;
 import com.bytetenns.client.tools.CommandReader;
-import com.bytetenns.utils.StringUtils;
+import com.bytetenns.common.utils.StringUtils;
 import org.jline.reader.LineReader;
 
 import java.io.File;

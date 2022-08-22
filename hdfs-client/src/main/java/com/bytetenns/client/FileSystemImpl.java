@@ -6,17 +6,17 @@ import com.bytetenns.client.exception.DfsClientException;
 import com.bytetenns.client.tools.CommandLineListener;
 import com.bytetenns.client.tools.OnMultiFileProgressListener;
 import com.bytetenns.Constants;
-import com.bytetenns.enums.PacketType;
-import com.bytetenns.exception.RequestTimeoutException;
+import com.bytetenns.common.enums.PacketType;
+import com.bytetenns.common.exception.RequestTimeoutException;
 import com.bytetenns.ha.BackupNodeManager;
-import com.bytetenns.netty.NettyPacket;
-import com.bytetenns.network.NetClient;
-import com.bytetenns.network.RequestWrapper;
-import com.bytetenns.network.file.FileTransportClient;
-import com.bytetenns.network.file.OnProgressListener;
-import com.bytetenns.scheduler.DefaultScheduler;
-import com.bytetenns.utils.PrettyCodes;
-import com.bytetenns.utils.StringUtils;
+import com.bytetenns.common.netty.NettyPacket;
+import com.bytetenns.common.network.NetClient;
+import com.bytetenns.common.network.RequestWrapper;
+import com.bytetenns.common.network.file.FileTransportClient;
+import com.bytetenns.common.network.file.OnProgressListener;
+import com.bytetenns.common.scheduler.DefaultScheduler;
+import com.bytetenns.common.utils.PrettyCodes;
+import com.bytetenns.common.utils.StringUtils;
 import com.bytetenns.dfs.model.backup.BackupNodeInfo;
 import com.bytetenns.dfs.model.backup.INode;
 import com.bytetenns.dfs.model.client.*;
@@ -34,12 +34,10 @@ import java.util.Map;
 
 /**
  * 文件系统客户端的实现类
- *
- * @author Sun Dasheng
  */
 @Slf4j
 public class FileSystemImpl implements FileSystem {
-
+    // 用户验证模块暂时不做
     private static final int AUTH_INIT = 0;
     private static final int AUTH_SUCCESS = 1;
     private static final int AUTH_FAIL = 2;
@@ -71,13 +69,17 @@ public class FileSystemImpl implements FileSystem {
 
     /**
      * 启动
+     * 启动时需要添加收到消息处理时的监听器
+     * 添加连接成功的监听器
+     * 添加连接失败的监听器
      */
     public void start() throws Exception {
         this.netClient.addNettyPackageListener(this::onReceiveMessage);
         // 添加监听器，在断线重连的时候，自动发起认证
         this.netClient.addConnectListener(connected -> {
             if (connected) {
-                authenticate();
+                // authenticate();
+                // 一连接上，Client就向NameNode发送包请求BackupNode的信息
                 fetchBackupInfo();
             }
         });
@@ -88,13 +90,16 @@ public class FileSystemImpl implements FileSystem {
                 commandLineListener.onConnectFailed();
             }
         });
+        // 正式尝试连接
         this.netClient.connect(fsClientConfig.getServer(), fsClientConfig.getPort());
+        // 验证是否连接成功，否则会断线重连，默认无限重连
         this.netClient.ensureConnected();
         log.info("和NameNode建立连接成功");
     }
 
     /**
      * 收到消息
+     * 定义收到消息时的具体处理
      */
     private void onReceiveMessage(RequestWrapper requestWrapper) throws InvalidProtocolBufferException {
         PacketType packetType = PacketType.getEnum(requestWrapper.getRequest().getPacketType());
@@ -126,42 +131,13 @@ public class FileSystemImpl implements FileSystem {
         });
     }
 
+    /**
+     * 该方法不是同步的，即不确定NameNode什么时候返回BackupNode的信息
+     * @throws InterruptedException
+     */
     private void fetchBackupInfo() throws InterruptedException {
         NettyPacket nettyPacket = NettyPacket.buildPacket(new byte[0], PacketType.FETCH_BACKUP_NODE_INFO);
         netClient.send(nettyPacket);
-    }
-
-    /**
-     * 发起认证请求
-     * 因为这里需要发送请求并同步等待结果，onConnected方法不能阻塞，
-     * 否则会导致后面网络收发失败，所以需要新开线程处理
-     */
-    private void authenticate() {
-        defaultScheduler.scheduleOnce("发起认证", () -> {
-            try {
-                String authInfo = fsClientConfig.getUsername() + "," + fsClientConfig.getSecret();
-                AuthenticateInfoRequest req = AuthenticateInfoRequest.newBuilder()
-                        .setAuthenticateInfo(authInfo)
-                        .build();
-                NettyPacket nettyPacket = NettyPacket.buildPacket(req.toByteArray(), PacketType.AUTHENTICATE);
-                NettyPacket resp = safeSendSync(nettyPacket);
-                AuthenticateInfoResponse authenticateInfoResponse = AuthenticateInfoResponse.parseFrom(resp.getBody());
-                authStatus = AUTH_SUCCESS;
-                fsClientConfig.setUserToken(authenticateInfoResponse.getToken());
-                notifyAuthenticate();
-                log.info("发起认证成功：[username={}, token={}]", fsClientConfig.getUsername(), authenticateInfoResponse.getToken());
-                if (commandLineListener != null) {
-                    commandLineListener.onAuthResult(true);
-                }
-            } catch (Exception e) {
-                log.error("发起认证失败：", e);
-                authStatus = AUTH_FAIL;
-                close();
-                if (commandLineListener != null) {
-                    commandLineListener.onAuthResult(false);
-                }
-            }
-        });
     }
 
     /**
@@ -211,8 +187,6 @@ public class FileSystemImpl implements FileSystem {
         NettyPacket nettyPacket = NettyPacket.buildPacket(request.toByteArray(), PacketType.CREATE_FILE);
         NettyPacket resp = safeSendSync(nettyPacket);
         CreateFileResponse response = CreateFileResponse.parseFrom(resp.getBody());
-        OnMultiFileProgressListener onMultiFileProgressListener =
-                new OnMultiFileProgressListener(listener, response.getDataNodesList().size());
         for (int i = 0; i < response.getDataNodesList().size(); i++) {
             DataNode dataNodes = response.getDataNodes(i);
             String hostname = dataNodes.getHostname();
@@ -224,7 +198,7 @@ public class FileSystemImpl implements FileSystem {
             if (log.isDebugEnabled()) {
                 log.debug("开始上传文件到：[node={}:{}, filename={}]", hostname, port, filename);
             }
-            fileTransportClient.sendFile(response.getRealFileName(), file.getAbsolutePath(), onMultiFileProgressListener, true);
+            fileTransportClient.sendFile(response.getRealFileName(), file.getAbsolutePath(), null, true);
             fileTransportClient.shutdown();
             if (log.isDebugEnabled()) {
                 log.debug("完成上传文件到：[node={}:{}, filename={}]", hostname, port, filename);
@@ -409,15 +383,6 @@ public class FileSystemImpl implements FileSystem {
         }
         if (authStatus != AUTH_SUCCESS) {
             throw new DfsClientException("未通过认证，不能发送请求");
-        }
-    }
-
-    /**
-     * 认证成功后，唤醒等待的线程
-     */
-    private void notifyAuthenticate() {
-        synchronized (this) {
-            notifyAll();
         }
     }
 }
