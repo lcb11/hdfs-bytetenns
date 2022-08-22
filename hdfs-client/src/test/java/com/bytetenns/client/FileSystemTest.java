@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 import com.bytetenns.client.config.FsClientConfig;
-import com.bytetenns.utils.PrettyCodes;
+import com.bytetenns.common.utils.PrettyCodes;
 
 import java.io.File;
 import java.util.HashMap;
@@ -45,6 +45,11 @@ public class FileSystemTest {
     public void testMkdir() throws Exception {
         FileSystem fileSystem = getFileSystem();
         fileSystem.mkdir("/usr/local/kafka");
+    }
+    public static void main(String[] args) throws Exception {
+        FileSystemTest test = new FileSystemTest();
+        FileSystem fileSystem = test.getFileSystem();
+        test.putFile(fileSystem);
     }
 
     @Test

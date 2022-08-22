@@ -2,8 +2,8 @@ package com.bytetenns.client;
 
 
 import com.bytetenns.Constants;
+import com.bytetenns.common.utils.FileUtil;
 import com.bytetenns.dfs.model.backup.INode;
-import com.bytetenns.utils.FileUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

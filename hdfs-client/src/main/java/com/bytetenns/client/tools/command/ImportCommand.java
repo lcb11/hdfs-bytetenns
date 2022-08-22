@@ -2,8 +2,8 @@ package com.bytetenns.client.tools.command;
 
 import com.bytetenns.client.FileSystem;
 import com.bytetenns.client.utils.ProgressBar;
-import com.bytetenns.utils.FileUtil;
-import com.bytetenns.utils.PrettyCodes;
+import com.bytetenns.common.utils.FileUtil;
+import com.bytetenns.common.utils.PrettyCodes;
 import org.jline.reader.LineReader;
 
 import java.io.File;

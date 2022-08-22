@@ -2,7 +2,7 @@ package com.bytetenns.client.tools.command;
 
 import com.bytetenns.client.FileSystem;
 import com.bytetenns.client.utils.ConsoleTable;
-import com.bytetenns.utils.FileUtil;
+import com.bytetenns.common.utils.FileUtil;
 import com.bytetenns.dfs.model.namenode.ClientDataNode;
 import com.bytetenns.dfs.model.namenode.ClientDataNodeInfo;
 import com.bytetenns.dfs.model.namenode.ClientNameNodeInfo;

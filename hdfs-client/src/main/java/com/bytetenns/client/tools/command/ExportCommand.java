@@ -4,7 +4,7 @@ import com.google.protobuf.ProtocolStringList;
 import com.bytetenns.client.FileSystem;
 import com.bytetenns.client.utils.ProgressBar;
 import com.bytetenns.dfs.model.client.GetAllFilenameResponse;
-import com.bytetenns.utils.FileUtil;
+import com.bytetenns.common.utils.FileUtil;
 import com.bytetenns.dfs.model.client.PreCalculateResponse;
 import org.jline.reader.LineReader;
 

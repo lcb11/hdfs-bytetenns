@@ -12,10 +12,10 @@ import java.util.concurrent.CountDownLatch;
 import com.bytetenns.client.FileSystem;
 import com.bytetenns.client.utils.ConsoleTable;
 import com.bytetenns.client.utils.ProgressBar;
-import com.bytetenns.network.file.OnProgressListener;
-import com.bytetenns.utils.FileUtil;
-import com.bytetenns.utils.PrettyCodes;
-import com.bytetenns.utils.StringUtils;
+import com.bytetenns.common.network.file.OnProgressListener;
+import com.bytetenns.common.utils.FileUtil;
+import com.bytetenns.common.utils.PrettyCodes;
+import com.bytetenns.common.utils.StringUtils;
 
 /**
  * 抽象命令
@@ -164,7 +164,7 @@ public abstract class AbstractCommand implements Command {
         System.out.println("上传文件【" + localFile + "】到【" + filename + "】");
         CountDownLatch latch = new CountDownLatch(1);
         ProgressBar progressBar = new ProgressBar();
-        fileSystem.put(filename, new File(localFile), -1, new HashMap<>(PrettyCodes.trimMapSize()), new OnProgressListener() {
+        fileSystem.put(filename, new File(localFile), new HashMap<>(PrettyCodes.trimMapSize()), new OnProgressListener() {
             @Override
             public void onProgress(long total, long current, float progress, int currentReadBytes) {
                 progressBar.printProgress(FileUtil.formatSize(current), FileUtil.formatSize(total), progress, "");

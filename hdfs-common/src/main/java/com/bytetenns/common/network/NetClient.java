@@ -140,7 +140,7 @@ public class NetClient {
     }
 
     /**
-     * 启动连接
+     * 启动连接，调用sheduleOnce方法，会立即执行
      * @param hostname 主机名
      * @param port     端口
      */

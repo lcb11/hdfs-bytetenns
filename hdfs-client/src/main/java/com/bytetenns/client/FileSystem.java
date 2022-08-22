@@ -4,7 +4,7 @@ package com.bytetenns.client;
 import com.bytetenns.dfs.model.client.GetAllFilenameResponse;
 import com.bytetenns.dfs.model.client.PreCalculateResponse;
 import com.bytetenns.dfs.model.client.ReadStorageInfoResponse;
-import com.bytetenns.network.file.OnProgressListener;
+import com.bytetenns.common.network.file.OnProgressListener;
 import com.bytetenns.dfs.model.namenode.ClientDataNodeInfo;
 import com.bytetenns.dfs.model.namenode.ClientNameNodeInfo;
 
