@@ -37,6 +37,7 @@ public class NameNode {
 
     public static void main(String[] args) {
         NameNodeConfig nameNodeConfig=new NameNodeConfig();
+        nameNodeConfig.setPort(2345);
         try {
             NameNode namenode = new NameNode(nameNodeConfig);
             /*

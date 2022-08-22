@@ -13,7 +13,7 @@ import com.bytetenns.client.tools.command.Command;
 /**
  * 控制台工具类
  *
- * @author Sun Dasheng
+ * @author LiZhirun
  */
 public class DfsCommand {
 
@@ -28,38 +28,23 @@ public class DfsCommand {
                 .connectRetryTime(1)
                 .build();
         FileSystemImpl fileSystem = new FileSystemImpl(fsClientConfig);
-        CountDownLatch latch = new CountDownLatch(1);  // 计数器，到达某个点后才能继续往下走
-        AtomicBoolean auth = new AtomicBoolean(false);
         fileSystem.setCommandLineListener(new CommandLineListener() {
             @Override
             public void onConnectFailed() {
                 System.out.println("连接NameNode失败.");
                 System.exit(1);
             }
-
-            @Override
-            public void onAuthResult(boolean result) {
-                auth.set(result);
-                latch.countDown();
-            }
         });
         fileSystem.start();
-        latch.await();
-        if (!auth.get()) {  // auth==false
-            System.out.println("认证失败.");
-            System.exit(1);
-        } else {
-            System.out.println("连接成功");
-            Command command;
-            String host = option.getOptionSet().valueOf(option.getServerOpt()) + ":" +
-                    option.getOptionSet().valueOf(option.getPortOpt());
-            CommandReader commandReader = new CommandReader(host);
-            while ((command = commandReader.readCommand()) != null) {
-                try {
-                    command.execute(fileSystem, commandReader.getLineReader());
-                } catch (Exception e) {
-                    System.out.println("Error while execute command: " + e);
-                }
+        Command command;
+        String host = option.getOptionSet().valueOf(option.getServerOpt()) + ":" +
+                option.getOptionSet().valueOf(option.getPortOpt());
+        CommandReader commandReader = new CommandReader(host);
+        while ((command = commandReader.readCommand()) != null) {
+            try {
+                command.execute(fileSystem, commandReader.getLineReader());
+            } catch (Exception e) {
+                System.out.println("Error while execute command: " + e);
             }
         }
     }
