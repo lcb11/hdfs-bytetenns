@@ -30,11 +30,8 @@ public class CommandFactory {
             return new NodeCommand(currentPath, command);
         } else if (command.startsWith("info")) {
             return new InfoCommand(currentPath, command);
-        } else if (command.startsWith("export")) {
-            return new ExportCommand(currentPath, command);
-        } else if (command.startsWith("import")) {
-            return new ImportCommand(currentPath, command);
         }
+        
         if (command.length() > 0) {
             System.out.println("无法识别命令：" + command);
         }

@@ -13,8 +13,8 @@ import java.util.concurrent.CountDownLatch;
 
 /**
  * 上传文件
- *
- * @author Sun Dasheng
+ * @author LiZhirun
+ * 把localFile以filename的名字上传到系统中
  */
 public class PutCommand extends AbstractCommand {
 
