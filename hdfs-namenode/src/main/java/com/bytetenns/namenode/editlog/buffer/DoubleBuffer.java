@@ -1,48 +1,70 @@
 package com.bytetenns.namenode.editlog.buffer;
 
-
 import com.bytetenns.namenode.NameNodeConfig;
+import com.bytetenns.namenode.editlog.EditLogWrapper;
+import com.bytetenns.namenode.editlog.EditslogInfo;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
   * @Author lcb
-  * @Description 写edit log的双缓冲区
-  * @Date 2022/8/10
+  * @Description 双缓冲机制
+  * @Date 2022/8/19
   * @Param
   * @return
   **/
+@Slf4j
 public class DoubleBuffer {
 
-    //用来承载线程写入edit log的buffer
-    private EditLogBuffer currentBuffer;
+    private NameNodeConfig nameNodeConfig;
+    private EditLogBuffer currentBuffer;//专门用来承载线程写入edits log
+    private EditLogBuffer syncBuffer;//将数据同步到磁盘
 
-    //用来同步到磁盘上去的buffer
-    private EditLogBuffer syncBuffer;
-
-    public DoubleBuffer() {
-        this.currentBuffer = new EditLogBuffer();
-        this.syncBuffer = new EditLogBuffer();
+    public DoubleBuffer(NameNodeConfig nameNodeConfig) {
+        this.nameNodeConfig = nameNodeConfig;
+        this.currentBuffer = new EditLogBuffer(nameNodeConfig);
+        this.syncBuffer = new EditLogBuffer(nameNodeConfig);
     }
 
-    //判断当前缓存区是否满了->是否可以刷新磁盘
-    public boolean shouldForceSync(){
-
-        return currentBuffer.getSize()>= NameNodeConfig.EDIT_LOG_BUFFER_LIMIT;
+    /**
+     * 写入一条editlog
+     */
+    public void write(EditLogWrapper editLog) throws IOException {
+        currentBuffer.write(editLog);
     }
 
-    //交换两块缓冲区
-    public void setReadyToSync(){
-        EditLogBuffer temp=currentBuffer;
-        currentBuffer=syncBuffer;
-        syncBuffer=temp;
+    /**
+     * 交换两块缓冲区
+     */
+    public void setReadyToSync() {
+        EditLogBuffer temp = currentBuffer;
+        currentBuffer = syncBuffer;
+        syncBuffer = temp;
     }
 
-    //todo 将缓存区的edit log刷新到磁盘
+    /**
+     * 把缓冲区的editlog数据刷新到磁盘
+     */
+    public EditslogInfo flush() throws IOException {
+        EditslogInfo editslogInfo = syncBuffer.flush();
+        if (editslogInfo != null) {
+            syncBuffer.clear();
+        }
+        return editslogInfo;
+    }
 
-    //todo 向缓存区中写入数据
+    /**
+     * 是否可以刷新磁盘
+     *
+     * @return 是否可以刷磁盘
+     */
+    public boolean shouldForceSync() {
+        return currentBuffer.size() >= nameNodeConfig.getEditLogFlushThreshold();
+    }
 
-    //todo 获取当前缓存区的数据
-
-    //todo 清除缓存区的数据
-
-
+    public List<EditLogWrapper> getCurrentEditLog() {
+        return currentBuffer.getCurrentEditLog();
+    }
 }

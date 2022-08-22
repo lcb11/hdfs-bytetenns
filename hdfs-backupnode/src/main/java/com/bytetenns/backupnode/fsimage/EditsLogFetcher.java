@@ -4,7 +4,7 @@ import com.bytetenns.backupnode.client.NameNodeClient;
 import com.bytetenns.backupnode.config.BackupNodeConfig;
 import com.bytetenns.backupnode.filesystem.InMemoryNameSystem;
 import com.bytetenns.dfs.model.backup.EditLog;
-import com.bytetenns.enums.FsOpType;
+import com.bytetenns.common.enums.FsOpType;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;

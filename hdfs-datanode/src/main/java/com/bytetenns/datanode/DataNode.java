@@ -5,7 +5,7 @@ import com.bytetenns.datanode.replica.PeerDataNodes;
 import com.bytetenns.datanode.server.DataNodeServer;
 import com.bytetenns.datanode.storage.StorageManager;
 // import com.ruyuan.dfs.common.metrics.Prometheus;
-import com.bytetenns.datanode.utils.DefaultScheduler;
+import com.bytetenns.common.scheduler.DefaultScheduler;
 import com.bytetenns.datanode.conf.DataNodeConfig;
 import com.bytetenns.datanode.server.DefaultFileTransportCallback;
 import com.bytetenns.datanode.server.DataNodeApis;
@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Properties;
 
 /**
  *
@@ -51,7 +52,9 @@ public class DataNode {
         try {
             Path path = Paths.get(args[0]);
             try (InputStream inputStream = Files.newInputStream(path)) {
-                dataNodeConfig = new DataNodeConfig();
+                Properties properties = new Properties();
+                properties.load(inputStream);
+                dataNodeConfig = DataNodeConfig.parse(properties);
             }
             log.info("DameNode启动配置文件: {}", path.toAbsolutePath());
         } catch (Exception e) {
@@ -86,8 +89,8 @@ public class DataNode {
      */
     private void start() throws InterruptedException {
         if (started.compareAndSet(false, true)) {
-            this.nameNodeClient.start();
-            this.dataNodeServer.start();
+            this.nameNodeClient.start();// 开始和namenode建立通信
+            this.dataNodeServer.start();// 建立同级之间的通信
         }
     }
 
@@ -96,9 +99,9 @@ public class DataNode {
      */
     public void shutdown() {
         if (started.compareAndSet(true, false)) {
-            this.defaultScheduler.shutdown();
-            this.nameNodeClient.shutdown();
-            this.dataNodeServer.shutdown();
+            this.defaultScheduler.shutdown();// 关闭调度器
+            this.nameNodeClient.shutdown();// 断开通信
+            this.dataNodeServer.shutdown();// 关闭同级管理器
         }
     }
 }

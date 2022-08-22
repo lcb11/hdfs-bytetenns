@@ -18,11 +18,6 @@
             <artifactId>hdfs-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.bytetenns</groupId>
-            <artifactId>hdfs-namenode</artifactId>
-            <version>${bytetenns.hdfs.namenode.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
         </dependency>
@@ -71,6 +66,12 @@
         <dependency>
             <groupId>io.prometheus</groupId>
             <artifactId>simpleclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.bytetenns</groupId>
+            <artifactId>hdfs-namenode</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

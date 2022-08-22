@@ -1,10 +1,10 @@
 package com.bytetenns.ha;
 
 import com.bytetenns.Constants;
-import com.bytetenns.enums.PacketType;
-import com.bytetenns.netty.NettyPacket;
-import com.bytetenns.network.AbstractChannelHandler;
-import com.bytetenns.utils.ByteUtil;
+import com.bytetenns.common.enums.PacketType;
+import com.bytetenns.common.netty.NettyPacket;
+import com.bytetenns.common.network.AbstractChannelHandler;
+import com.bytetenns.common.utils.ByteUtil;
 import com.google.common.collect.Sets;
 
 import io.netty.channel.ChannelHandlerContext;

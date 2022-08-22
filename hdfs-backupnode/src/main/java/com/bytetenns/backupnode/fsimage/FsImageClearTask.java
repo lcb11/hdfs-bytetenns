@@ -1,7 +1,8 @@
 package com.bytetenns.backupnode.fsimage;
 
 import com.bytetenns.backupnode.filesystem.FsNameSystem;
-import com.bytetenns.utils.FileUtil;
+import com.bytetenns.common.utils.FileUtil;
+import com.bytetenns.namenode.editlog.FsEditLog;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import java.io.FileInputStream;

@@ -1,19 +1,19 @@
 package com.bytetenns.datanode.server;
 
-import com.bytetenns.datanode.network.NetServer;
-import com.bytetenns.datanode.utils.DefaultScheduler;
+import com.bytetenns.common.network.NetServer;
+import com.bytetenns.common.scheduler.DefaultScheduler;
 import com.bytetenns.datanode.conf.DataNodeConfig;
 import com.bytetenns.datanode.replica.PeerDataNodes;
 import lombok.extern.slf4j.Slf4j;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.bytetenns.datanode.netty.NettyPacket;
-import com.bytetenns.datanode.enums.PacketType;
+import com.bytetenns.common.netty.NettyPacket;
+import com.bytetenns.common.enums.PacketType;
 // import com.bytetenns.datanode.common.metrics.Prometheus;
-import com.bytetenns.datanode.network.AbstractChannelHandler;
-import com.bytetenns.datanode.network.RequestWrapper;
-import com.bytetenns.datanode.network.file.DefaultFileSendTask;
-import com.bytetenns.datanode.network.file.FilePacket;
-import com.bytetenns.datanode.network.file.FileReceiveHandler;
+import com.bytetenns.common.network.AbstractChannelHandler;
+import com.bytetenns.common.network.RequestWrapper;
+import com.bytetenns.common.network.file.DefaultFileSendTask;
+import com.bytetenns.common.network.file.FilePacket;
+import com.bytetenns.common.network.file.FileReceiveHandler;
 import com.bytetenns.datanode.namenode.NameNodeClient;
 import com.bytetenns.datanode.model.common.GetFileRequest;
 import com.bytetenns.datanode.model.datanode.PeerNodeAwareRequest;
@@ -22,7 +22,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
 
 // import com.bytetenns.dfs.common.metrics.MetricsHandler;
-import com.bytetenns.datanode.network.BaseChannelInitializer;
+import com.bytetenns.network.BaseChannelInitializer;
 import com.bytetenns.datanode.server.HttpFileServerHandler;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
@@ -62,11 +62,14 @@ public class DataNodeServer {
    * 启动
    */
   public void start() throws InterruptedException {
-    // 用于接收PeerDataNode发过来的通知信息
+    // 用于创建channel的pipeline，绑定了2个端口，分别用于下载和上传
     MultiPortChannelInitializer multiPortChannelInitializer = new MultiPortChannelInitializer(dataNodeConfig,
         storageManager);
+    // 添加handlers，从而对不同类型的请求进行处理
     multiPortChannelInitializer.addHandlers(Collections.singletonList(dataNodeApis));
+    // 配置MultiPortChannelInitializer
     this.netServer.setChannelInitializer(multiPortChannelInitializer);
+    // 绑定本地端口，从而接受文件上传请求和Http下载请求
     this.netServer.bind(Arrays.asList(dataNodeConfig.getDataNodeTransportPort(), dataNodeConfig.getDataNodeHttpPort()));
   }
 
@@ -78,7 +81,6 @@ public class DataNodeServer {
     this.netServer.shutdown();
     this.peerDataNodes.shutdown();
   }
-
 
   /**
    * 绑定多端口的渠道处理器
@@ -97,14 +99,24 @@ public class DataNodeServer {
 
     @Override
     protected void initChannel(SocketChannel ch) {
+      // 获取channel所连接的本地端口号
       int localPort = ch.localAddress().getPort();
+      // 对channel的端口号进行判断
+      // 文件上传端口
       if (localPort == dataNodeConfig.getDataNodeTransportPort()) {
         super.initChannel(ch);
+        // 文件下载端口
       } else if (localPort == dataNodeConfig.getDataNodeHttpPort()) {
-        ch.pipeline().addLast(new HttpServerCodec());
-        ch.pipeline().addLast(new HttpObjectAggregator(65536));
-        ch.pipeline().addLast(new ChunkedWriteHandler());
-        ch.pipeline().addLast(new HttpFileServerHandler(storageManager));
+        // Inbound事件触发时正序执行，只执行Inbound Handler；Outbound事件触发时逆序执行，只执行Outbound Handler
+
+        // 用于解析http请求中的request line
+        ch.pipeline().addLast(new HttpServerCodec()); // Inbound & Outbound
+        // 用于解析http请求中的message body，具体详见https://blog.csdn.net/m0_45406092/article/details/104895032
+        ch.pipeline().addLast(new HttpObjectAggregator(65536)); // Inbound & Outbound
+        // 将文件分块写入channel
+        ch.pipeline().addLast(new ChunkedWriteHandler()); // Inbound & Outbound，这里只处理Outbound，也就是将文件数据传给请求端
+        // 真正实现文件下载处理，包括文件的查找和发送文件数据
+        ch.pipeline().addLast(new HttpFileServerHandler(storageManager)); // Inbound
       }
     }
   }

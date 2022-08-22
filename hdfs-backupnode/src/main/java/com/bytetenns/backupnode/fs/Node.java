@@ -1,7 +1,7 @@
 package com.bytetenns.backupnode.fs;
 
 import com.bytetenns.dfs.model.backup.INode;
-import com.bytetenns.enums.NodeType;
+import com.bytetenns.common.enums.NodeType;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,6 +17,7 @@ public class Node {
     private String path;
     private int type;
     private final TreeMap<String, Node> children;
+    //节点属性
     private Map<String, String> attr;
     private Node parent;
 

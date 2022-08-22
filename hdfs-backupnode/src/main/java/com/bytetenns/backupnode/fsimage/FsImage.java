@@ -1,7 +1,8 @@
 package com.bytetenns.backupnode.fsimage;
 
-import com.bytetenns.backupnode.utils.ByteUtil;
-import com.bytetenns.backupnode.utils.FileUtil;
+
+import com.bytetenns.common.utils.ByteUtil;
+import com.bytetenns.common.utils.FileUtil;
 import com.google.protobuf.InvalidProtocolBufferException;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,9 +1,9 @@
 package com.bytetenns.datanode.replica;
 
 
-import com.bytetenns.datanode.enums.CommandType;
-import com.bytetenns.datanode.utils.DefaultScheduler;
-import com.bytetenns.datanode.utils.FileUtil;
+import com.bytetenns.common.enums.CommandType;
+import com.bytetenns.common.scheduler.DefaultScheduler;
+import com.bytetenns.common.utils.FileUtil;
 import com.bytetenns.datanode.namenode.NameNodeClient;
 import com.bytetenns.datanode.storage.StorageManager;
 import com.bytetenfs.dfs.model.datanode.ReplicaCommand;
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 副本复制管理组件
  *
- * @author Sun Dasheng
+ * @author gongwei
  */
 @Slf4j
 public class ReplicateManager {

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package com.ruyuan.dfs.common.proto;
+package com.bytetenns.dfs.common.proto;
 
 option java_multiple_files = true;
 option java_package = "com.bytetenns.dfs.model.namenode";
@@ -31,7 +31,10 @@ message NameNodeSlots {
     int32 rebalanceNodeId = 4;
 }
 
-
+message NewPeerNodeInfo {
+    repeated RegisterRequest requests = 1;
+    repeated UserEntity users = 2;
+}
 
 message RebalanceSlotsRequest {
     int32 nameNodeId = 1;
@@ -143,3 +146,6 @@ message ClientDataNode {
     int32 status = 5;
 }
 
+message FetchDataNodeByFilenameResponse {
+    repeated DataNode datanodes = 1;
+}

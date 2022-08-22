@@ -3,12 +3,12 @@ package com.bytetenns.datanode.namenode;
 import com.google.common.collect.Lists;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.bytetenns.datanode.file.FileInfo;
-import com.bytetenns.datanode.netty.NettyPacket;
-import com.bytetenns.datanode.enums.PacketType;
+import com.bytetenns.common.netty.NettyPacket;
+import com.bytetenns.common.enums.PacketType;
 // import com.bytetenns.common.ha.BackupNodeManager;
-import com.bytetenns.datanode.network.NetClient;
-import com.bytetenns.datanode.network.RequestWrapper;
-import com.bytetenns.datanode.utils.DefaultScheduler;
+import com.bytetenns.common.network.NetClient;
+import com.bytetenns.common.network.RequestWrapper;
+import com.bytetenns.common.scheduler.DefaultScheduler;
 import com.bytetenns.datanode.conf.DataNodeConfig;
 import com.bytetenns.datanode.replica.PeerDataNodes;
 import com.bytetenns.datanode.replica.ReplicateManager;
@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 public class NameNodeClient {
   private final ReplicateManager replicateManager;
   private final DefaultScheduler defaultScheduler;
-  private final BackupNodeManager backupNodeManager;
   private final StorageManager storageManager;
   private NetClient netClient;
   private final DataNodeConfig datanodeConfig;
@@ -49,7 +48,6 @@ public class NameNodeClient {
     this.datanodeConfig = datanodeConfig;
     this.storageManager = storageManager;
     this.defaultScheduler = defaultScheduler;
-    this.backupNodeManager = new BackupNodeManager(defaultScheduler);
     this.replicateManager = new ReplicateManager(defaultScheduler, peerDataNodes, storageManager, this);
     peerDataNodes.setNameNodeClient(this);
   }
@@ -154,15 +152,15 @@ public class NameNodeClient {
       return;
     }
     netClient.setRetryTime(3);
-    BackupNodeInfo backupNodeInfo = BackupNodeInfo.parseFrom(requestWrapper.getRequest().getBody());
-    backupNodeManager.maybeEstablishConnect(backupNodeInfo, hostname -> {
-      datanodeConfig.setNameNodeServers(hostname + ":" + datanodeConfig.getNameNodePort());
-      netClient.shutdown();
-      netClient = new NetClient("DataNode-NameNode-" + datanodeConfig.getNameNodeAddr(), defaultScheduler);
-      log.info("检测到BackupNode升级为NameNode了，替换NameNode链接信息，并重新建立链接：[hostname={}, port={}]",
-          datanodeConfig.getNameNodeAddr(), datanodeConfig.getNameNodePort());
-      start();
-    });
+    // BackupNodeInfo backupNodeInfo = BackupNodeInfo.parseFrom(requestWrapper.getRequest().getBody());
+    // backupNodeManager.maybeEstablishConnect(backupNodeInfo, hostname -> {
+    //   datanodeConfig.setNameNodeServers(hostname + ":" + datanodeConfig.getNameNodePort());
+    //   netClient.shutdown();
+    //   netClient = new NetClient("DataNode-NameNode-" + datanodeConfig.getNameNodeAddr(), defaultScheduler);
+    //   log.info("检测到BackupNode升级为NameNode了，替换NameNode链接信息，并重新建立链接：[hostname={}, port={}]",
+    //       datanodeConfig.getNameNodeAddr(), datanodeConfig.getNameNodePort());
+    //   start();
+    // });
   }
 
   private void fetchBackupInfo() throws InterruptedException {

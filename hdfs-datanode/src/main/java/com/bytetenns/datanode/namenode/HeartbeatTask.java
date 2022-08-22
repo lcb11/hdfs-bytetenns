@@ -1,7 +1,7 @@
 package com.bytetenns.datanode.namenode;
 
-import com.bytetenns.datanode.netty.NettyPacket;
-import com.bytetenns.datanode.enums.PacketType;
+import com.bytetenns.netty.NettyPacket;
+import com.bytetenns.enums.PacketType;
 import com.bytetenns.datanode.conf.DataNodeConfig;
 import com.bytetenns.dfs.model.datanode.HeartbeatRequest;
 import io.netty.channel.ChannelHandlerContext;
@@ -16,14 +16,14 @@ import lombok.extern.slf4j.Slf4j;
  * @return
  **/
 
- @Slf4j
+@Slf4j
 public class HeartbeatTask implements Runnable {
     private DataNodeConfig datanodeConfig;
     private ChannelHandlerContext ctx;
 
     public HeartbeatTask(ChannelHandlerContext ctx, DataNodeConfig datanodeConfig) {
-        this.ctx = ctx;
-        this.datanodeConfig = datanodeConfig;
+        this.ctx = ctx; // 获取上下文共享变量
+        this.datanodeConfig = datanodeConfig; // 配置datenode
     }
 
     @Override

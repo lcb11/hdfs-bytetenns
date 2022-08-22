@@ -3,6 +3,8 @@ package com.bytetenns.datanode.conf;
 import lombok.Data;
 import lombok.Builder;
 
+import java.util.Properties;
+
 /**
  *
  * @author gongwei
@@ -33,26 +35,26 @@ public class DataNodeConfig {
   // 上传下载文件的工作线程数量
   private int dataNodeWorkerThreads;
 
-  public static DataNodeConfig init() {
-    String baseDir = "~/srv/hdfs/datanode";
-    String nameNodeServers = "localhost:2341";
-    String dataNodeTransportServer = "localhost:5671";
-    String dataNodeHttpServer = "localhost:8001";
-    int heartbeatInterval = 30000;
-    int dataNodeId = 1;
-    String fileLocatorType = "simple";
-    int dataNodeWorkerThreads = 200;
+  public static DataNodeConfig parse(Properties properties) {
+    String baseDir = (String) properties.get("base.dir");
+    String nameNodeServers = (String) properties.get("namenode.servers");
+    String dataNodeTransportServer = (String) properties.get("datanode.transport.server");
+    String dataNodeHttpServer = (String) properties.get("datanode.http.server");
+    int heartbeatInterval = Integer.parseInt((String) properties.get("datanode.heartbeat.interval"));
+    int dataNodeId = Integer.parseInt((String) properties.get("datanode.id"));
+    String fileLocatorType = (String) properties.get("file.locator.type");
+    int dataNodeWorkerThreads = Integer.parseInt((String) properties.get("datanode.worker.threads"));
     return DataNodeConfig.builder()
-        .baseDir(baseDir)
-        .nameNodeServers(nameNodeServers)
-        .dataNodeTransportServer(dataNodeTransportServer)
-        .dataNodeHttpServer(dataNodeHttpServer)
-        .heartbeatInterval(heartbeatInterval)
-        .dataNodeId(dataNodeId)
-        .fileLocatorType(fileLocatorType)
-        .dataNodeWorkerThreads(dataNodeWorkerThreads)
-        .build();
-  }
+            .baseDir(baseDir)
+            .nameNodeServers(nameNodeServers)
+            .dataNodeTransportServer(dataNodeTransportServer)
+            .dataNodeHttpServer(dataNodeHttpServer)
+            .heartbeatInterval(heartbeatInterval)
+            .dataNodeId(dataNodeId)
+            .fileLocatorType(fileLocatorType)
+            .dataNodeWorkerThreads(dataNodeWorkerThreads)
+            .build();
+}
 
   public int getNameNodePort() {
     return Integer.parseInt(nameNodeServers.split(":")[1]);

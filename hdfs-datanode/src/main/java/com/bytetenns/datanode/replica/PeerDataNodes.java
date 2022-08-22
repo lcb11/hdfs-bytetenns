@@ -1,9 +1,9 @@
 package com.bytetenns.datanode.replica;
 
-import com.bytetenns.datanode.netty.NettyPacket;
-import com.bytetenns.datanode.enums.PacketType;
-import com.bytetenns.datanode.network.NetClient;
-import com.bytetenns.datanode.utils.DefaultScheduler;
+import com.bytetenns.common.netty.NettyPacket;
+import com.bytetenns.common.enums.PacketType;
+import com.bytetenns.common.network.NetClient;
+import com.bytetenns.common.scheduler.DefaultScheduler;
 import com.bytetenns.datanode.conf.DataNodeConfig;
 import com.bytetenns.datanode.namenode.NameNodeClient;
 import com.bytetenns.datanode.server.DataNodeServer;
