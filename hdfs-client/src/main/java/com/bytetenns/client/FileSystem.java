@@ -132,21 +132,4 @@ public interface FileSystem {
      * @throws Exception 异常
      */
     ReadStorageInfoResponse readStorageInfo(String filename) throws Exception;
-
-    /**
-     * 计算某个路径下所有文件数量和存储大小
-     *
-     * @param path 文件路径
-     * @return 结果
-     * @throws Exception 异常
-     */
-    PreCalculateResponse preCalculatePath(String path) throws Exception;
-
-    /**
-     * 获取目录下所有的文件路径
-     *
-     * @param path 目录
-     * @return
-     */
-    GetAllFilenameResponse getAllFilenameByPath(String path) throws Exception;
 }

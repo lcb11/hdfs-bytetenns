@@ -335,29 +335,6 @@ public class FileSystemImpl implements FileSystem {
         return ReadStorageInfoResponse.parseFrom(responseNettyPacket.getBody());
     }
 
-    @Override
-    public PreCalculateResponse preCalculatePath(String path) throws Exception {
-        validate(path);
-        PreCalculateRequest request = PreCalculateRequest.newBuilder()
-                .setPath(path)
-                .build();
-        NettyPacket nettyPacket = NettyPacket.buildPacket(request.toByteArray(), PacketType.CLIENT_PRE_CALCULATE);
-        NettyPacket responseNettyPacket = safeSendSync(nettyPacket);
-        return PreCalculateResponse.parseFrom(responseNettyPacket.getBody());
-    }
-
-    @Override
-    public GetAllFilenameResponse getAllFilenameByPath(String path) throws Exception {
-        validate(path);
-        GetAllFilenameRequest request = GetAllFilenameRequest.newBuilder()
-                .setPath(path)
-                .build();
-        NettyPacket nettyPacket = NettyPacket.buildPacket(request.toByteArray(), PacketType.CLIENT_GET_ALL_FILENAME);
-        nettyPacket.setSupportChunked(true);
-        NettyPacket responsePackage = safeSendSync(nettyPacket);
-        return GetAllFilenameResponse.parseFrom(responsePackage.getBody());
-    }
-
     /**
      * 确保返回的结果不是无权限
      */
