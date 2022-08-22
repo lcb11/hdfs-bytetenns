@@ -53,7 +53,7 @@ public class NameNodeConfig {
     private final int DEFAULT_DATANODE_ALIVE_CHECK_INTERVAL = 30000;//50*60
 
 
-    private String baseDir;//默认的文件目录
+    private String baseDir ="/bytetenns/hdfs/namenode";//默认的文件目录
     private int port;//默认监听的端口号   DEFAULT_PORT + ""
     private int editLogFlushThreshold;//默认EditLog Buffer刷磁盘的阈值
     private long dataNodeHeartbeatTimeout;//默认DataNode心跳超时的阈值
@@ -65,9 +65,9 @@ public class NameNodeConfig {
     private int httpPort;
     private long nameNodeTrashCheckInterval;//垃圾检查间隔
     private long nameNodeTrashClearThreshold;//垃圾清理条件
-    private int nameNodeApiCoreSize;//namenode处理线程池相关||核心线程数量
-    private int nameNodeApiMaximumPoolSize;//线程池最大线程数量
-    private int nameNodeApiQueueSize;//线程队列大小
+    private int nameNodeApiCoreSize=200;//namenode处理线程池相关||核心线程数量
+    private int nameNodeApiMaximumPoolSize=200;//线程池最大线程数量
+    private int nameNodeApiQueueSize=2000;//线程队列大小
 
     public NameNodeConfig(NameNodeConf nameNodeConf) {//NameNodeConf通过protobuf生成的一个序列化文件
         this.baseDir = nameNodeConf.getValuesOrDefault("baseDir", DEFAULT_BASEDIR);
