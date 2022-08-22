@@ -37,7 +37,7 @@ public class BackupNodeConfig {
     private long checkpointInterval = 3600000;
 
     // namenode地址
-    private String nameNodeServer = "localhost:2341";
+    private String nameNodeServer = "localhost:2345";
 
     // backupNode地址
     private String backupNodeServer = "localhost:12341";
