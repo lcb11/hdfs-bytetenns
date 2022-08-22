@@ -20,3 +20,15 @@ BackupNode启动前需要修改配置文件，设置本地文件存储路径和b
 ## 启动DataNode ##
 
 ## 运行客户端和单元测试 ##
+Client启动需要配置输入参数，比如在vscode的.vscode/launch.json需要有
+
+```
+        {
+            "type": "java",
+            "name": "Launch DfsCommand",
+            "request": "launch",
+            "mainClass": "com.bytetenns.client.tools.DfsCommand",
+            "projectName": "hdfs-client",
+            "args": ["-port=2345", "-secret=123456", "-server=localhost", "-username=root"]
+        }
+```
