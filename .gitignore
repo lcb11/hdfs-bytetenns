@@ -16,3 +16,6 @@ buildNumber.properties
 # IDE
 .vscode
 .idea
+
+# log
+logs
