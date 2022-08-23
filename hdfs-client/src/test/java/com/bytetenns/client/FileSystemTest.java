@@ -26,7 +26,7 @@ public class FileSystemTest {
                 .username("admin")
                 .secret("admin")
                 .server("localhost")
-                .port(2341)
+                .port(2345)
                 .ack(1)
                 .build();
         return FsClient.getFileSystem(fsClientConfig);
