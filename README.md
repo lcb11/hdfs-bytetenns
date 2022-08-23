@@ -18,17 +18,29 @@ BackupNode启动前需要修改配置文件，设置本地文件存储路径和b
 ![BN启动参数配置](doc/readmeImg/BN启动参数配置.png)
 
 ## 启动DataNode ##
+在`conf/datanode.properties`中配置相应的参数，然后配置输入参数，比如在`.vscode/launch.json`中配置如下：
+```json
+{
+    "type": "java",
+    "name": "Launch DataNode",
+    "request": "launch",
+    "mainClass": "com.bytetenns.datanode.DataNode",
+    "projectName": "hdfs-datanode",
+    "vmArgs": "-Dlogback.configurationFile=conf/logback-datanode.xml",
+    "args": "conf/datanode.properties"
+}
+```
 
 ## 运行客户端和单元测试 ##
-Client启动需要配置输入参数，比如在vscode的.vscode/launch.json需要有
+Client启动需要配置输入参数，比如`.vscode/launch.json`中配置如下：
 
-```
-        {
-            "type": "java",
-            "name": "Launch DfsCommand",
-            "request": "launch",
-            "mainClass": "com.bytetenns.client.tools.DfsCommand",
-            "projectName": "hdfs-client",
-            "args": ["-port=2345", "-secret=123456", "-server=localhost", "-username=root"]
-        }
+```json
+{
+    "type": "java",
+    "name": "Launch DfsCommand",
+    "request": "launch",
+    "mainClass": "com.bytetenns.client.tools.DfsCommand",
+    "projectName": "hdfs-client",
+    "args": ["-port=2345", "-secret=123456", "-server=localhost", "-username=root"]
+}
 ```
