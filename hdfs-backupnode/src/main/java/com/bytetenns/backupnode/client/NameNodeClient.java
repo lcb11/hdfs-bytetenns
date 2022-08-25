@@ -137,10 +137,6 @@ public class NameNodeClient {
         NettyPacket req = NettyPacket.buildPacket(request.toByteArray(), PacketType.FETCH_EDIT_LOG);
         NettyPacket nettyPacket = netClient.sendSync(req);
         FetchEditsLogResponse response = FetchEditsLogResponse.parseFrom(nettyPacket.getBody());
-        List<UserEntity> usersList = response.getUsersList();
-        NodeRoleSwitcher.getInstance().replaceUser(usersList.stream()
-                .map(User::parse)
-                .collect(Collectors.toList()));
         return response.getEditLogsList();
     }
 
