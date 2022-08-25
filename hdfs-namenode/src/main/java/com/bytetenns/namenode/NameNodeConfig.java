@@ -54,17 +54,17 @@ public class NameNodeConfig {
 
 
     private String baseDir ="/bytetenns/hdfs/namenode";//默认的文件目录
-    private int port;//默认监听的端口号   DEFAULT_PORT + ""
-    private int editLogFlushThreshold;//默认EditLog Buffer刷磁盘的阈值
-    private long dataNodeHeartbeatTimeout;//默认DataNode心跳超时的阈值
-    private int replicaNum;//默认副本数量
-    private long dataNodeAliveCheckInterval;//默认检查DataNode是否心跳超时的时间间隔
+    private int port = 2345;//默认监听的端口号   DEFAULT_PORT + ""
+    private int editLogFlushThreshold = 524288;//默认EditLog Buffer刷磁盘的阈值
+    private long dataNodeHeartbeatTimeout = 600000;//默认DataNode心跳超时的阈值
+    private int replicaNum = 1;//默认副本数量
+    private long dataNodeAliveCheckInterval = 30000;//默认检查DataNode是否心跳超时的时间间隔
     private String nameNodePeerServers;//nameNodeConf.getValuesOrThrow("nameNodePeerServers");通过ptotobuf序列化所得的一个文件
-    private int nameNodeId;
-    private String nameNodeLaunchMode;//nameNode启动模块
-    private int httpPort;
-    private long nameNodeTrashCheckInterval;//垃圾检查间隔
-    private long nameNodeTrashClearThreshold;//垃圾清理条件
+    private int nameNodeId = 1;
+    private String nameNodeLaunchMode = "single";//nameNode启动模块
+    private int httpPort = 8081;
+    private long nameNodeTrashCheckInterval = 3600000;//垃圾检查间隔
+    private long nameNodeTrashClearThreshold = 86400000;//垃圾清理条件
     private int nameNodeApiCoreSize=200;//namenode处理线程池相关||核心线程数量
     private int nameNodeApiMaximumPoolSize=200;//线程池最大线程数量
     private int nameNodeApiQueueSize=2000;//线程队列大小
