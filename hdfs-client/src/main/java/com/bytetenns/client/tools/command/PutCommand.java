@@ -45,6 +45,7 @@ public class PutCommand extends AbstractCommand {
         }
         File file = new File(localFile);
         if (!file.exists()) {
+            System.out.println("localFile = " + localFile + ", filename = " + filename);
             System.out.println("文件不存在：" + file.getAbsolutePath());
             return;
         }

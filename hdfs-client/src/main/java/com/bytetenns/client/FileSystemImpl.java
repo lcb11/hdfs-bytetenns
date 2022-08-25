@@ -194,6 +194,10 @@ public class FileSystemImpl implements FileSystem {
         NettyPacket resp = safeSendSync(nettyPacket);
         CreateFileResponse response = CreateFileResponse.parseFrom(resp.getBody());
         log.debug("dataNodes = {}", response.getDataNodesList());
+        if(response.getDataNodesCount() == 0){
+            log.error("NameNode does not return target DataNode");
+            return;
+        }
         for (int i = 0; i < response.getDataNodesList().size(); i++) {
             DataNode dataNodes = response.getDataNodes(i);
             String hostname = dataNodes.getHostname();
