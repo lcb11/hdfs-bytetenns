@@ -30,7 +30,7 @@ public class StorageManager {
 
     private static final String STORAGE_INFO = "storage.info";
     private static final String STORAGE_TEMP = "storage.temp";
-    private static final int HASH_SIZE = 256;
+    private static final int HASH_SIZE = 2;
     private String storageDir;
     private FileLocator fileLocator;
 
