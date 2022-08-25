@@ -10,26 +10,18 @@ import lombok.Data;
 /**
  * 客户端命令行工具
  *
- * @author Sun Dasheng
+ * @author LiZhirun
  */
 @Data
 public class ClientCommandOption {
 
     private OptionParser parser;
-    private OptionSpec<String> usernameOpt;
-    private OptionSpec<String> secretOpt;
     private OptionSpec<String> serverOpt;
     private OptionSpec<Integer> portOpt;
     private OptionSet optionSet;
 
     public ClientCommandOption(String[] args) {
         this.parser = new OptionParser(false);
-        this.usernameOpt = parser.accepts("username", "用户名")
-                .withRequiredArg()
-                .ofType(String.class);
-        this.secretOpt = parser.accepts("secret", "秘钥")
-                .withRequiredArg()
-                .ofType(String.class);
         this.serverOpt = parser.accepts("server", "NameNode节点地址")
                 .withRequiredArg()
                 .ofType(String.class);
@@ -43,6 +35,6 @@ public class ClientCommandOption {
      * 校验参数
      */
     public void checkArgs() {
-        CommandLineUtils.checkRequiredArgs(parser, optionSet, usernameOpt, secretOpt, secretOpt, portOpt);
+        CommandLineUtils.checkRequiredArgs(parser, optionSet, serverOpt, portOpt);
     }
 }

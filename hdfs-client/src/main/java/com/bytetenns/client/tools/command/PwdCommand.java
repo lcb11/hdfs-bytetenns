@@ -6,7 +6,7 @@ import org.jline.reader.LineReader;
 /**
  * 实现PWD功能, 显示当前所处工作目录的全路径
  *
- * @author Sun Dasheng
+ * @author LiZhirun
  */
 public class PwdCommand extends AbstractCommand {
 

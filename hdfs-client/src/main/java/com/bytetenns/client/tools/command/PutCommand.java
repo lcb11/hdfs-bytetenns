@@ -1,15 +1,10 @@
 package com.bytetenns.client.tools.command;
 
 import com.bytetenns.client.FileSystem;
-import com.bytetenns.client.utils.ProgressBar;
-import com.bytetenns.common.network.file.OnProgressListener;
-import com.bytetenns.common.utils.PrettyCodes;
 import com.bytetenns.common.utils.StringUtils;
 import org.jline.reader.LineReader;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * 上传文件

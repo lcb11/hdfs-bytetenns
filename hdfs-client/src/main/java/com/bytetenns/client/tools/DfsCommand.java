@@ -21,8 +21,6 @@ public class DfsCommand {
         ClientCommandOption option = new ClientCommandOption(args);
         option.checkArgs();
         FsClientConfig fsClientConfig = FsClientConfig.builder()
-                .username(option.getOptionSet().valueOf(option.getUsernameOpt()))
-                .secret(option.getOptionSet().valueOf(option.getSecretOpt()))
                 .server(option.getOptionSet().valueOf(option.getServerOpt()))
                 .port(option.getOptionSet().valueOf(option.getPortOpt()))
                 .connectRetryTime(1)
