@@ -25,7 +25,7 @@ public class BackupNodeConfig {
     public static final String FS_IMAGE_NAME = "fsimage-%s";
 
     // 本地文件存放路径
-    private String baseDir = "/bytedance/dfs/backupnode";
+    private String baseDir = "/bytetenns/hdfs/backupnode";
 
     // 每次拉取editslog的间隔
     private long fetchEditLogInterval = 5000;
@@ -41,6 +41,7 @@ public class BackupNodeConfig {
 
     // backupNode地址
     private String backupNodeServer = "localhost:12341";
+
     public String getNameNodeHostname() {
         Matcher matcher = PATTERN.matcher(nameNodeServer);
         if (matcher.find()) {
