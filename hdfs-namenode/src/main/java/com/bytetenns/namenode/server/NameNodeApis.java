@@ -1054,7 +1054,11 @@ public class NameNodeApis extends AbstractChannelHandler {
             //目录中不存在该目录名
             //根据改文件所属的用户 ，为文件分配dataNodes列表
 
-            List<DataNodeInfo> dataNodeList = dataNodeManager.allocateDataNodes(request.getUserName(), replicaNum, realFilename);
+            //List<DataNodeInfo> dataNodeList = dataNodeManager.allocateDataNodes(request.getUserName(), replicaNum, realFilename);
+            List<DataNodeInfo> dataNodeList = new LinkedList<>();
+            DataNodeInfo dataNodeInfo = new DataNodeInfo("localhost",5671,8001,123L);
+            dataNodeList.add(dataNodeInfo);
+
             Prometheus.incCounter("namenode_put_file_count", "NameNode收到的上传文件请求数量");
             Prometheus.hit("namenode_put_file_qps", "NameNode瞬时上传文件QPS");
             //file对应dataNode逐一处理
