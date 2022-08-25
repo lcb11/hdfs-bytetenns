@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * <p>node --role=namenode 获取namenode基本信息：配置、backup信息、slot信息</p>
  * <p>node --role=datanode 获取datanode的基本信息</p>
  *
- * @author Sun Dasheng
+ * @author LiZhirun
  */
 public class NodeCommand extends AbstractCommand {
 

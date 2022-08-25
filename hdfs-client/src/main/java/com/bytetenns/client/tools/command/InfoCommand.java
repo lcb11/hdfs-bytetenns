@@ -11,7 +11,7 @@ import org.jline.reader.LineReader;
  *     info /path/file.txt
  * </pre>
  *
- * @author Sun Dasheng
+ * @author LiZhirun
  */
 
 public class InfoCommand extends AbstractCommand {

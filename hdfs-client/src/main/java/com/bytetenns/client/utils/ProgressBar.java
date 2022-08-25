@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 /**
  * 打印工具
  *
- * @author Sun Dasheng
+ * @author LiZhirun
  */
 public class ProgressBar {
 

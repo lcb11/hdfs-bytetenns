@@ -7,7 +7,7 @@ import com.bytetenns.client.FileSystem;
 /**
  * 命令
  *
- * @author Sun Dasheng
+ * @author LiZhirun
  */
 public interface Command {
 

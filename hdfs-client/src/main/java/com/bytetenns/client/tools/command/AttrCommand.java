@@ -12,7 +12,7 @@ import java.util.Map;
  * 例如：<br/>
  * <p>read /usr/local/file.txt<p/>
  *
- * @author Sun Dasheng
+ * @author LiZhirun
  */
 public class AttrCommand extends AbstractCommand {
 

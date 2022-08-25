@@ -15,7 +15,7 @@ import java.io.File;
  * <p>cd /absolute/path<p/>
  * <p>cd relative/path<p/>
  *
- * @author Sun Dasheng
+ * @author LiZhirun
  */
 public class CdCommand extends AbstractCommand {
 

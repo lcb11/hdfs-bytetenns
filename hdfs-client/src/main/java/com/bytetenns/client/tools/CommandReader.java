@@ -19,7 +19,7 @@ import java.io.IOException;
 /**
  * 命令Reader
  *
- * @author Sun Dasheng
+ * @author LiZhirun
  */
 public class CommandReader {
     private String host;

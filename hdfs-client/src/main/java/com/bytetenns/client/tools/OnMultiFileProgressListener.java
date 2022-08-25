@@ -5,7 +5,7 @@ import com.bytetenns.common.network.file.OnProgressListener;
 /**
  * 多文件传输进度监听器
  *
- * @author Sun Dasheng
+ * @author LiZhirun
  */
 public class OnMultiFileProgressListener implements OnProgressListener {
 

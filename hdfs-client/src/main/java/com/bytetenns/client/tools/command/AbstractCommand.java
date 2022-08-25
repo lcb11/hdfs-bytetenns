@@ -20,7 +20,7 @@ import com.bytetenns.common.utils.StringUtils;
 /**
  * 抽象命令
  *
- * @author Sun Dasheng
+ * @author LiZhirun
  */
 public abstract class AbstractCommand implements Command {
 

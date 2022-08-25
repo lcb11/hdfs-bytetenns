@@ -3,7 +3,7 @@ package com.bytetenns.client.exception;
 /**
  * 连接超时异常
  *
- * @author Sun Dasheng
+ * @author LiZhirun
  */
 public class ConnectTimeoutException extends Exception {
 

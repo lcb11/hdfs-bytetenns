@@ -9,7 +9,7 @@ import java.io.File;
 /**
  * 获取文件请求
  *
- * @author Sun Dasheng
+ * @author LiZhirun
  */
 public class GetCommand extends AbstractCommand {
 

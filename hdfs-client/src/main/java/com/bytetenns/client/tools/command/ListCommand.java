@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * 列出当前目录的命令
  *
- * @author Sun Dasheng
+ * @author LiZhirun
  */
 public class ListCommand extends AbstractCommand {
 

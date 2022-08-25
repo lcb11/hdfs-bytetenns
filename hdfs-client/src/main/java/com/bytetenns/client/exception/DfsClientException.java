@@ -3,7 +3,7 @@ package com.bytetenns.client.exception;
 /**
  * 认证异常
  *
- * @author Sun Dasheng
+ * @author LiZhirun
  */
 public class DfsClientException extends Exception {
 

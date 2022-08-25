@@ -6,7 +6,7 @@ import lombok.Data;
 /**
  * 客户端配置
  *
- * @author Sun Dasheng
+ * @author LiZhirun
  */
 @Data
 @Builder

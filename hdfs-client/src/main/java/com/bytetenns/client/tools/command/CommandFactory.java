@@ -5,7 +5,7 @@ import com.bytetenns.client.tools.CommandReader;
 /**
  * 命令工厂
  *
- * @author Sun Dasheng
+ * @author LiZhirun
  */
 public class CommandFactory {
 

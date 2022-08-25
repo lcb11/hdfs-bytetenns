@@ -3,7 +3,7 @@ package com.bytetenns.client.tools;
 /**
  * 命令行监听器
  *
- * @author Sun Dasheng
+ * @author LiZhirun
  */
 public interface CommandLineListener {
 
