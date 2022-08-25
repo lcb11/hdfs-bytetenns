@@ -28,7 +28,6 @@ public class FsImage {
     private static final int LENGTH_OF_FILE_LENGTH_FIELD = 4;
     private static final int LENGTH_OF_MAX_TX_ID_FIELD = 8;
 
-
     //当前最大的txId
     private long maxTxId;
 
@@ -49,7 +48,6 @@ public class FsImage {
         System.arraycopy(body, 0, ret, LENGTH_OF_FILE_LENGTH_FIELD + LENGTH_OF_MAX_TX_ID_FIELD, body.length);
         return ret;
     }
-
 
     /**
      * 解析FsImage文件
@@ -98,7 +96,6 @@ public class FsImage {
             return fsImage;
         }
     }
-
 
     /**
      * 校验FSImage是否合法

@@ -203,17 +203,13 @@ public class FsDirectory {
     }
 
     /**
-     * <pre>
-     *     假设存在文件：
-     *
-     *     /aaa/bbb/c1.png
-     *     /aaa/bbb/c2.png
-     *     /bbb/ccc/c3.png
+     * 假设存在文件：
+     *  /aaa/bbb/c1.png
+     *  /aaa/bbb/c2.png
+     *  /bbb/ccc/c3.png
      *
      * 传入：/aaa，则返回：[/bbb/c1.png, /bbb/c2.png]
      *
-     * </pre>
-     * <p>
      * 返回文件名
      */
     public List<String> findAllFiles(String path) {
@@ -237,11 +233,9 @@ public class FsDirectory {
         return ret;
     }
 
-
     public Set<Metadata> findAllFileBySlot(int slot) {
         return findAllFilesFilterBySlot(root, slot);
     }
-
 
     public Set<Metadata> findAllFilesFilterBySlot(Node node, int slot) {
         Set<Metadata> ret = new HashSet<>();
@@ -263,6 +257,5 @@ public class FsDirectory {
         }
         return ret;
     }
-
 
 }

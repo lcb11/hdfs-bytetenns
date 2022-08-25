@@ -15,7 +15,6 @@ import java.util.Map;
 
 /**
  * 清理FsImage的任务
- *
  * @author Sun Dasheng
  */
 @Slf4j
@@ -68,4 +67,5 @@ public class FsImageClearTask implements Runnable {
             fsEditLog.cleanEditLogByTxId(maxTxId);
         }
     }
+
 }

@@ -7,7 +7,6 @@ import com.bytetenns.common.utils.ByteUtil;
 import com.bytetenns.common.utils.NetUtils;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
-
 import java.util.Collections;
 import java.util.Set;
 
@@ -45,4 +44,5 @@ public class AwareConnectHandler extends AbstractChannelHandler {
     protected Set<Integer> interestPackageTypes() {
         return Collections.emptySet();
     }
+
 }

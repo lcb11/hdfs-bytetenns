@@ -27,17 +27,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 负责控制BackupNode节点升级为NameNode节点的组件
- *
- * @author Sun Dasheng
  */
 @Slf4j
 public class NodeRoleSwitcher {
 
     public static volatile NodeRoleSwitcher INSTANCE = null;
 
+    //backup主启动类
     private BackupNode backupNode;
+
     private final Map<String, SocketChannel> channelMap = new ConcurrentHashMap<>();
+
     private final AtomicBoolean upgrading = new AtomicBoolean(false);
+
     private final AtomicBoolean judgeNameNodeDown = new AtomicBoolean(false);
 
     /**
@@ -47,12 +49,13 @@ public class NodeRoleSwitcher {
     private final AtomicInteger reportCount = new AtomicInteger(0);
     private NameNodeConfig nameNodeConfig;
     private Map<Integer, Integer> slotsMap;
-    private List<User> userList = new ArrayList<>();
+    //private List<User> userList = new ArrayList<>();
 
     private NodeRoleSwitcher() {
     }
 
     public static NodeRoleSwitcher getInstance() {
+        //加锁 假如INSTANCE == null 初始化 NodeRoleSwitcher
         if (INSTANCE == null) {
             synchronized (NodeRoleSwitcher.class) {
                 if (INSTANCE == null) {
@@ -63,16 +66,8 @@ public class NodeRoleSwitcher {
         return INSTANCE;
     }
 
-    public void replaceUser(List<User> users) {
-        if (!users.isEmpty()) {
-            userList.clear();
-            userList.addAll(users);
-        }
-    }
-
     /**
      * 设置BackupNode实例
-     *
      * @param backupNode BackupNode实例
      */
     public void setBackupNode(BackupNode backupNode) {
@@ -81,7 +76,6 @@ public class NodeRoleSwitcher {
 
     /**
      * 添加一个连接
-     *
      * @param channel 连接
      */
     public void addConnect(Channel channel) {
@@ -94,7 +88,6 @@ public class NodeRoleSwitcher {
 
     /**
      * 移除一个连接
-     *
      * @param channel 连接
      */
     public void removeConnect(Channel channel) {
@@ -124,6 +117,7 @@ public class NodeRoleSwitcher {
             judgeNameNodeDown.set(true);
         }
         if (judgeNameNodeDown.get()) {
+            //需要升级
             upgrade();
         } else {
             upgrading.set(false);
@@ -162,9 +156,8 @@ public class NodeRoleSwitcher {
             FileUtil.saveFile(slotFile, true, buffer);
 
             // 保存用户信息
-            String data = JSONObject.toJSONString(userList);
-            FileUtil.saveFile(nameNodeConfig.getAuthInfoFile(), true, ByteBuffer.wrap(data.getBytes()));
-
+            //String data = JSONObject.toJSONString(userList);
+            //FileUtil.saveFile(nameNodeConfig.getAuthInfoFile(), true, ByteBuffer.wrap(data.getBytes()));
 
             log.info("基于BackupNode最新的内存目录树保存为NameNode的FsImage文件：[file={}]", nameNodeFsImage);
             NameNode nameNode = new NameNode(nameNodeConfig);
@@ -179,7 +172,6 @@ public class NodeRoleSwitcher {
 
     /**
      * 标识NameNode状态
-     *
      * @param status 状态
      */
     public void markNameNodeStatus(int status) {
@@ -216,7 +208,6 @@ public class NodeRoleSwitcher {
 
     /**
      * 设置NameNode的配置信息
-     *
      * @param nameNodeConfig NameNode的配置信息
      */
     public void setNameNodeConfig(NameNodeConfig nameNodeConfig) {
@@ -231,7 +222,4 @@ public class NodeRoleSwitcher {
         return this.slotsMap != null;
     }
 
-    public boolean isUpgradeFromBackup() {
-        return judgeNameNodeDown.get();
-    }
 }

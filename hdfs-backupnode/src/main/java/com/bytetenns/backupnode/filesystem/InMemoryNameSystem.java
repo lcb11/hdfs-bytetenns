@@ -91,4 +91,5 @@ public class InMemoryNameSystem extends AbstractFsNameSystem {
     public Set<Metadata> getFilesBySlot(int slot) {
         return null;
     }
+
 }

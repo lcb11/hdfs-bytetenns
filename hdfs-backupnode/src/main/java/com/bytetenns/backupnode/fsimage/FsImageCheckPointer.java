@@ -6,13 +6,10 @@ import com.bytetenns.backupnode.filesystem.InMemoryNameSystem;
 import com.bytetenns.common.network.file.FileTransportClient;
 import com.bytetenns.common.utils.FileUtil;
 import lombok.extern.slf4j.Slf4j;
-
 import java.nio.ByteBuffer;
 
 /**
  * FsImage 检查点
- *
- * <pre>
  *  将内存目录树 + txId 持久化在同一个FsImage文件中，将时间戳拼接在文件尾：
  *    - fsimage-1624846255954
  *    - fsimage-1624846265954
@@ -24,10 +21,7 @@ import java.nio.ByteBuffer;
  *  2. 逐步校验FsImage文件，直到找到一个格式合法的FsImage文件。
  *      2.1 假设上面第3个FsImage文件不合法，保存到一半的时候BackupNode宕机了，或者传给NameNode的时候传了一半BackupNode宕机了，导致整个文件不完整
  *      2.2 首先判断第3个文件，校验得出第3个不合法，删除第三个文件。继续校验第2个文件，文件合法。把第一个文件删除。只保留第2个文件
- *
  *  3. NameNode基于第2步得到的FsImage文件，读取其中的TxId，然后删除比txId小的EditLogs文件
- *
- * </pre>
  */
 @Slf4j
 public class FsImageCheckPointer implements Runnable {
