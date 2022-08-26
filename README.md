@@ -48,6 +48,6 @@ Client启动需要配置输入参数，比如`.vscode/launch.json`中配置如�
     "request": "launch",
     "mainClass": "com.bytetenns.client.tools.DfsCommand",
     "projectName": "hdfs-client",
-    "args": ["-port=2345", "-secret=123456", "-server=localhost", "-username=root"]
+    "args": ["-port=2345", "-server=localhost"]
 }
 ```
