@@ -21,6 +21,7 @@ public class PutCommand extends AbstractCommand {
     public void execute(FileSystem fileSystem, LineReader lineReader) throws Exception {
         String localFile = getArgs(0);
         String filename = getArgs(1);
+        System.out.println("-----localFile = " + localFile + ", filename = " + filename);
         if (localFile == null || filename == null) {
             System.out.println("无法识别命令：" + command);
             return;

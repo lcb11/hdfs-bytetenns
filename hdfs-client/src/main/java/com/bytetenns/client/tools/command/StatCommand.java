@@ -14,9 +14,9 @@ import org.jline.reader.LineReader;
  * @author LiZhirun
  */
 
-public class InfoCommand extends AbstractCommand {
+public class StatCommand extends AbstractCommand {
 
-    public InfoCommand(String currentPath, String command) {
+    public StatCommand(String currentPath, String command) {
         super(currentPath, command);
     }
 

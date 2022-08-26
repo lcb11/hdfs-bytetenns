@@ -249,13 +249,17 @@ public class FileSystemImpl implements FileSystem {
                 .setFilename(filename)
                 .build();
         NettyPacket nettyPacket = NettyPacket.buildPacket(request.toByteArray(), PacketType.GET_DATA_NODE_FOR_FILE);
+        log.debug("发送filename给NameNode请求对应的Datanode...");
         NettyPacket resp = safeSendSync(nettyPacket);
         GetDataNodeForFileResponse response = GetDataNodeForFileResponse.parseFrom(resp.getBody());
         DataNode dataNode = response.getDataNode();
+        log.debug("收到NameNode返回的DataNode信息，hostname = {}, port = {}", dataNode.getHostname(), dataNode.getNioPort());
         NetClient netClient = new NetClient("FSClient-DataNode-" + dataNode.getHostname(), defaultScheduler);
         FileTransportClient fileTransportClient = new FileTransportClient(netClient);
+        log.debug("开始连接DataNode...");
         netClient.connect(dataNode.getHostname(), dataNode.getNioPort());
         netClient.ensureConnected();
+        log.debug("DataNode连接成功，开始读取文件...");
         fileTransportClient.readFile(response.getRealFileName(), absolutePath, new OnProgressListener() {
             @Override
             public void onProgress(long total, long current, float progress, int currentReadBytes) {

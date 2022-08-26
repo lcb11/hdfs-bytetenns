@@ -29,7 +29,7 @@ public class CommandFactory {
         } else if (command.startsWith("node")) {
             return new NodeCommand(currentPath, command);
         } else if (command.startsWith("info")) {
-            return new InfoCommand(currentPath, command);
+            return new StatCommand(currentPath, command);
         }
         
         if (command.length() > 0) {
