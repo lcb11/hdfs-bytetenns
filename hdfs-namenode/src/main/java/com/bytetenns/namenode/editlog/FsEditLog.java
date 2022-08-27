@@ -94,9 +94,9 @@ public class FsEditLog {
                 e.printStackTrace();
             }
 
-            if (!editLogBuffer.shouldForceSync()) {
+            /*if (!editLogBuffer.shouldForceSync()) {
                 return;
-            }
+            }*/
             // 如果代码进行到这里，就说明需要刷磁盘
             isSchedulingSync = true;
         }
