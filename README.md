@@ -1,13 +1,14 @@
 # 项目介绍 #
-
+这是2022字节青训营大数据方向-项目实践三-简易分布式存储系统的简单实现
 # 项目架构 #
-
+![image](https://user-images.githubusercontent.com/46276651/187206005-49d8c2e9-5982-4fa3-85f0-80f43f18d76b.png)
 # 编译&运行 #
 
 ## 初始化 ##
 
 ## 启动NameNode ##
-
+NameNode启动类为`hdfs-bytetenns\hdfs-namenode\src\main\java\com\bytetenns\namenode\NameNode.java`
+直接点击运行即可
 ## 启动BackupNode ##
 BackupNode启动类为：`hdfs-backupnode/src/main/java/com/bytetenns/backupnode/BackupNode.java`    
 
