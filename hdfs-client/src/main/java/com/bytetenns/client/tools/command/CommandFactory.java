@@ -28,7 +28,7 @@ public class CommandFactory {
             return new AttrCommand(currentPath, command);
         } else if (command.startsWith("node")) {
             return new NodeCommand(currentPath, command);
-        } else if (command.startsWith("info")) {
+        } else if (command.startsWith("stat")) {
             return new StatCommand(currentPath, command);
         }
         
