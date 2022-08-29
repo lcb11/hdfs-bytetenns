@@ -40,7 +40,7 @@ private String backupNodeServer = "localhost:12341"; // backupNode地址
 ```
 
 ## 运行客户端和单元测试 ##
-Client启动需要配置输入参数，比如`.vscode/launch.json`中配置如下：
+Client启动需要配置输入参数，指定NameNode的ip地址和端口，比如`.vscode/launch.json`中配置如下：
 
 ```json
 {
