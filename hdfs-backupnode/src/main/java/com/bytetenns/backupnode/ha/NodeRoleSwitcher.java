@@ -154,12 +154,8 @@ public class NodeRoleSwitcher {
             NameNodeSlots slots = slotsBuilder.build();
             buffer = ByteBuffer.wrap(slots.toByteArray());
             FileUtil.saveFile(slotFile, true, buffer);
-
-            // 保存用户信息
-            //String data = JSONObject.toJSONString(userList);
-            //FileUtil.saveFile(nameNodeConfig.getAuthInfoFile(), true, ByteBuffer.wrap(data.getBytes()));
-
             log.info("基于BackupNode最新的内存目录树保存为NameNode的FsImage文件：[file={}]", nameNodeFsImage);
+
             NameNode nameNode = new NameNode(nameNodeConfig);
             Runtime.getRuntime().addShutdownHook(new Thread(nameNode::shutdown));
             this.backupNode.shutdown();
